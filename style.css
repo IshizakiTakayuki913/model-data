@@ -1,0 +1,40 @@
+body {
+    background: #9af;
+    position: relative;
+}
+
+#screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 60;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: #00000000;
+}
+
+.btn {
+    position: absolute;
+    z-index: 50;
+    width: 100px;
+    height: 60px;
+    background: rgb(181, 126, 75);
+}
+
+#btn1 {
+    left: 100px;
+    top: 100px;
+}
+#btn2 {
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    right: 100px;
+    top: 100px;
+}
+
+.view-btn {
+    z-index: 60;
+}
