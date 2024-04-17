@@ -2,8 +2,9 @@
   <head>
     <meta charset="utf-8" />
     <title>quaternion sample</title>
-    <!-- <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script> -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.8thwall.com/web/aframe/aframe-extras-6.1.1.min.js"></script>
+
     <script src="./solve.js"></script>
     <link rel="stylesheet" href="./style.css">
   </head>
@@ -25,7 +26,8 @@
         const btn2 = document.getElementById("btn2")
         const camera = document.getElementById("camera")
         const camera2 = document.getElementById("camera2")
-        const body = document.getElementById("body");
+        const body = document.getElementById("body")
+        const hand = document.getElementById("hand")
         
         this.data.btn_pos = {x: document.body.clientWidth - 100, y: 100}
         btn2.style.left = this.data.btn_pos.x
@@ -104,6 +106,18 @@
             if(e.shiftKey) sulb+="'"
             else if(this.data.Space_key) sulb+="2"
             rotate(sulb)
+            if(sulb == "U'"){
+              console.log("hand animation")
+              console.log(hand)
+              // setTimeout(() => {
+              // }, time)
+              hand.setAttribute('animation-mixer', {
+                clip: 'T-U',
+                // loop: 'repeat',
+                // timeScale: 1,
+              })
+              // time += 1500
+            }
           }
           else if(e.code == "Space")
             this.data.Space_key = true
@@ -140,7 +154,8 @@
 
     <a-scene press-key-board>
 			<a-assets timeout="10000">
-				<a-asset-item id="hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
+				<a-asset-item id="hand" src="./sub-hand.glb"></a-asset-item>
+				<!-- <a-asset-item id="hand" src="./model/sub-hand.glb"></a-asset-item> -->
         <!-- <img  id="img" src="https://ishizakitakayuki913.github.io/model-data/piece3.png"></img> -->
 			</a-assets>
       <a-sky color="#4CC3D9"></a-sky>
@@ -309,7 +324,7 @@
       <a-entity id="camera" position="0 2 0" rotation="0 0 0">
         <a-camera id="camera2" cube-control look-controls="enabled: false" wasd-controls-enabled="false" position="0 0 6" rotation="0 0 0">
           <!-- wasd-controls-enabled="false" -->
-          <a-entity cursor="rayOrigin: mouse" />
+          <!-- <a-entity cursor="rayOrigin: mouse" /> -->
         </a-camera>
       </a-entity>
     </a-scene>
@@ -321,78 +336,3 @@
     </div>
   </body>
 </html>
-
-<!--
-  
-      schema: {
-        key: {type: 'int', default: 0},
-        randomLEDnum: {type: 'int', default: 0},
-        LEDorigins: {type: 'array', default: []},
-        LEDpositions: {type: 'array', default: []},
-        duration: {type: 'number', default: 1},
-        LEDscale: {type: 'number', default: 1},
-        LEDscales: {type: 'array', default: []},
-      },
-  
-  <!doctype html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<title>MDN Games: A-Frame demo</title>
-	<link rel="stylesheet" href="style.css">
-	<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-	<script>
-		AFRAME.registerComponent('hit-box', {
-			init:function(){
-				this.el.addEventListener('click', ()=>{
-					console.log("aaaaa");
-				});
-			}
-		});
-
-		AFRAME.registerComponent('cube-model-coner', {
-			init:function(){
-				// this.el.addEventListener('click', ()=>{
-				//     console.log("aaaaa");
-				// });
-			}
-		});
-
-    
-
-    AFRAME.registerComponent('quaterinon-rotation', {
-      init: function () {
-        // {x:0 y:0 z:0}から{x:0 y:1 z:0}のベクトル軸を中心に10度回線させるクオータ二オンを生成。（パイはラジアン角で180度）
-        this.quaternion = new THREE.Quaternion(0, 1, 0, Math.PI / 18).normalize();
-
-        this.el.addEventListener('click', () => {
-          // クオーターニオンの内積によって現在の回転から、引数の回転を加えた姿勢に移行する。
-          this.el.object3D.quaternion.multiply(this.quaternion);
-					console.log("x "+this.el.object3D.quaternion.x+"  y "+this.el.object3D.quaternion.y+"  z "+this.el.object3D.quaternion.z);
-					// console.log("\nx "+this.el.object3D.rotation.x+"  y "+this.el.object3D.rotation.y+"  z "+this.el.object3D.rotation.z);
-        });
-      },
-    });
-    AFRAME.registerComponent('euler-rotation', {
-      init: function () {
-        this.el.addEventListener('click', () => {
-          this.el.object3D.rotation.y += 10;
-					// console.log("x "+this.el.object3D.rotation.x+"  y "+this.el.object3D.rotation.y+"  z "+this.el.object3D.rotation.z);
-        });
-      },
-    });
-	</script>
-
-</head>
-
-<body>
-	<a-scene cube-model-coner
-	>
-	<a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: #box1"></a-entity>
-
-	<a-box id="box1" hit-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"  depth="2" height="4" width="0.5"></a-box>
-
-	</a-scene>
-</body>
-</html> -->
