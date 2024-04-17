@@ -1,9 +1,13 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
+    <!-- <meta name="8thwall:renderer" content="aframe:1.3.0" /> -->
     <title>quaternion sample</title>
+    
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.8thwall.com/web/aframe/aframe-extras-6.1.1.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script> -->
 
     <script src="./solve.js"></script>
     <link rel="stylesheet" href="./style.css">
@@ -27,7 +31,7 @@
         const camera = document.getElementById("camera")
         const camera2 = document.getElementById("camera2")
         const body = document.getElementById("body")
-        const hand = document.getElementById("hand")
+        let hand = document.getElementById("hand")
         
         this.data.btn_pos = {x: document.body.clientWidth - 100, y: 100}
         btn2.style.left = this.data.btn_pos.x
@@ -36,15 +40,12 @@
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
 
-        // ctx.beginPath();
-        // ctx.ellipse(50, 50, 50, 50, 0, Math.PI * 2, 0);
-        // ctx.stroke();
-
 
         btn1.addEventListener('click', () => {
           // rotate("F");
           rotate("R U R' F' R U R' U' R' F R2 U' R' U'")
         });
+
         btn2.addEventListener('mousedown', (e) => {
           // console.log("mousedown");
           screen.style.display = "block"
@@ -72,7 +73,6 @@
           // console.log("\nview_pres_rad.x:"+this.data.view_pres_rad.x+" view_pres_rad.y:"+this.data.view_pres_rad.y)
           // console.log("dis.x:"+this.data.dis.x+" dis.y:"+this.data.dis.y)
 
-
           this.data.view_rad.y = this.data.view_pres_rad.y - this.data.dis.y
           this.data.view_rad.y = Math.min(Math.max(-50,this.data.view_rad.y),50)
 
@@ -82,7 +82,7 @@
 
           // console.log("view_rad.x:"+this.data.view_rad.x+" view_rad.y:"+this.data.view_rad.y)
 
-          ctx.clearRect(0, 0, 100, 100);
+          ctx.clearRect(0, 0, 200, 200);
 
           ctx.beginPath();
           ctx.fillStyle = "#0f0";
@@ -109,14 +109,18 @@
             if(sulb == "U'"){
               console.log("hand animation")
               console.log(hand)
-              // setTimeout(() => {
-              // }, time)
+              // hand.object3D.visible = false
+              
+              // orb.object3D.visible = true
+              hand.removeAttribute('animation-mixer')
               hand.setAttribute('animation-mixer', {
                 clip: 'T-U',
-                // loop: 'repeat',
-                // timeScale: 1,
+                loop: 'once',
+                timeScale: 1,
+                clampWhenFinished: true,
               })
-              // time += 1500
+              // setTimeout(() => {
+              // }, time)
             }
           }
           else if(e.code == "Space")
@@ -124,16 +128,6 @@
         })
         
         body.addEventListener("keyup", (e) => {
-          // const A = e.code.indexOf("Key")
-          // const M = 'UDLRBF'
-          // console.log(`${e.code} ${A}`)
-          // if(A == 0 && M.indexOf(e.code[3]) != -1){
-          //   let sulb = e.code[3]
-          //   if(e.shiftKey) sulb+="'"
-          //   else if(e.altKey) sulb+="2"
-          //   rotate(sulb)
-          // }
-          // else 
           if(e.code == "Space")
             this.data.Space_key = false
         })
@@ -154,9 +148,7 @@
 
     <a-scene press-key-board>
 			<a-assets timeout="10000">
-				<a-asset-item id="hand" src="./sub-hand.glb"></a-asset-item>
-				<!-- <a-asset-item id="hand" src="./model/sub-hand.glb"></a-asset-item> -->
-        <!-- <img  id="img" src="https://ishizakitakayuki913.github.io/model-data/piece3.png"></img> -->
+				<a-asset-item id="model_hand" src="./sub-hand.glb"></a-asset-item>
 			</a-assets>
       <a-sky color="#4CC3D9"></a-sky>
       <a-plane position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
@@ -166,7 +158,7 @@
         id="hand"
         position="0 0 0"
         rotation="0 0 0"
-        gltf-model="#hand"
+        gltf-model="#model_hand"
         animation-mixer="clip: idol.1; loop: repeat"
         scale="10 10 10"
         shadow="receive: false">
