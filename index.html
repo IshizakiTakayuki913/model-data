@@ -36,7 +36,8 @@
           node.material.needsUpdate = true
         }
       })
-		}, 100)
+      AAA()
+		}, 5000)
   </script>
 
   <body id="body">
@@ -47,7 +48,7 @@
 </a-assets>
 
 <a-sky color="#4CC3D9"></a-sky>
-<a-plane cursor-listener class="clickable"  position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
+<a-plane class="clickable"  position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
 
 <a-entity position="0 6 0" rotation="0 0 0">
   <a-entity
@@ -222,7 +223,7 @@
 
 <a-entity id="camera" position="0 6 0" rotation="0 0 0">
   <a-camera id="camera2" look-controls="enabled: false" wasd-controls-enabled="false" position="0 0 10" rotation="0 0 0">
-    <a-entity cursor="rayOrigin: mouse;" raycaster="objects: .clickable; showLine: true; far: 100; lineColor: red; lineOpacity: 0.5" />
+    <a-entity cursor="rayOrigin: mouse;" raycaster="objects: .clickable" />
   </a-camera>
 </a-entity>
 
