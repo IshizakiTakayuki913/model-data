@@ -374,11 +374,10 @@ function one_rotate_anim(roate,time = 2000){
 scramble = "R F' U' F' B2 L' U' F2 B2 L' U' F2"
 // sample_scramble = "R U R' F' R U R' U' R' F R2 U' R' U'"
 // L B' L2 B' L D' L' D' L2
-solved_state = scamble2state(solved_state,scramble)
+
 
 let scrambled_state = solved_state
 // scrambled_state = scamble2state(scrambled_state,scramble)
-solved_state.data_print()
 // console.log(`is_solved ${is_solved(scrambled_state,0)}`)
 // scrambled_state = scamble2state(scrambled_state,"R U' R2 U R U' F' U' F")
 // console.log(is_solved(scrambled_state,1))
@@ -386,33 +385,42 @@ solved_state.data_print()
 
 let search = new Search()
 let sum_solution2 = []
-// solution = search.start_search(scrambled_state,0)
-console.log(`clos  [${search.start_search(solved_state,0, 20)}]`)
-sum_solution2 = sum_solution2.concat(search.current_solution)
-solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-search.current_solution = []
 
-console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
-sum_solution2 = sum_solution2.concat(search.current_solution)
-solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-search.current_solution = []
+function AAA(){
+	solved_state = scamble2state(solved_state,scramble)
+	scrambled_state = solved_state
+	color_set(scrambled_state)
+	solved_state.data_print()
 
-console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
-sum_solution2 = sum_solution2.concat(search.current_solution)
-solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-search.current_solution = []
+	// solution = search.start_search(scrambled_state,0)
+	console.log(`clos  [${search.start_search(solved_state,0, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
-sum_solution2 = sum_solution2.concat(search.current_solution)
-solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-search.current_solution = []
+	console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
-sum_solution2 = sum_solution2.concat(search.current_solution)
-solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-search.current_solution = []
+	console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-console.log(sum_solution2)
+	console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
+
+	console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
+
+	console.log(sum_solution2)
+}
+
 // console.log(`current_solution`)
 // console.log(sum_solution2)
 // color_set(scrambled_state)
