@@ -1,13 +1,18 @@
 body {
     background: #9af;
     position: relative;
+    /* z-index: 50; */
 }
+
+/* a-scene {
+    z-index: 10;
+} */
 
 #screen {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 60;
+    /* z-index: 70; */
     display: none;
     width: 100%;
     height: 100%;
@@ -16,7 +21,7 @@ body {
 
 .btn {
     position: absolute;
-    z-index: 50;
+    /* z-index: 60; */
     width: 100px;
     height: 60px;
     background: rgb(181, 126, 75);
@@ -33,8 +38,4 @@ body {
     border-radius: 50%;
     right: 100px;
     top: 100px;
-}
-
-.view-btn {
-    z-index: 60;
 }
