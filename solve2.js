@@ -47,7 +47,7 @@ const presskeyboard = () => ({
 			key_ples[e.code] = false
 
 			if(e.code == "KeyP"){
-				sul_mode = false
+				// sul_mode = false
 				// motions(search.current_solution)
 			}
 		})
