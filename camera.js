@@ -26,7 +26,8 @@ const camera = () => ({
 
 		btn1.addEventListener('click', () => {
 			// rotate("F");
-			rotate("R U R' F' R U R' U' R' F R2 U' R' U'")
+			// rotate("R U R' F' R U R' U' R' F R2 U' R' U'")
+			   sul_mode = false
 		});
 
 		btn2.addEventListener('mousedown', (e) => {
