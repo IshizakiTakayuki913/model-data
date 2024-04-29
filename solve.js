@@ -24,6 +24,36 @@ class State {
 		return new State(new_cp, new_co, new_ep, new_eo);
 	}
 	
+	hand_move(move) {
+		let new_cp = new Array(8);
+		let new_co = new Array(8);
+		let graph = ". 今前位置 前向き 今、前位置の中にあるのがいる出来場所\n"
+		for(let i=0;i<8;i++){
+			new_cp[i] = move.cp.indexOf(this.cp[move.cp[i]])
+			new_co[i] = (3+move.co[i]+this.co[move.cp[i]]-move.co[move.cp.indexOf(this.cp[move.cp[i]])])%3
+			graph += [
+				i,
+				move.co[i],
+				move.cp[i],
+				this.co[move.cp[i]],
+				this.cp[move.cp[i]],
+				move.cp.indexOf(this.cp[move.cp[i]]),
+				move.co[move.cp.indexOf(this.cp[move.cp[i]])],
+				(3+move.co[i]+this.co[move.cp[i]]-move.co[move.cp.indexOf(this.cp[move.cp[i]])])%3,
+			].join(' ')+"\n"
+		}
+		// console.log(graph)
+
+		let new_ep = new Array(12);
+		let new_eo = new Array(12);
+		for(let i=0;i<12;i++){
+			new_ep[i] = move.ep.indexOf(this.ep[move.ep[i]])
+			new_eo[i] = (2+move.eo[i]+this.eo[move.ep[i]]-move.eo[move.ep.indexOf(this.ep[move.ep[i]])])%2
+		}
+		
+		return new State(new_cp, new_co, new_ep, new_eo);
+	}
+	
 	data_print() {
 		console.log(this.cp)
 		console.log(this.co)
@@ -56,6 +86,7 @@ class Search {
 		// console.log(`prev_move [${prev_move}]`)
 
 		for(const move_name of move_names){
+			console.log(`move_name [${move_name}]`)
 			const a= is_move_available(prev_move, move_name)
 			// console.log(`prev_move [${prev_move}] move [${move_name}] t ${a}`)
 			if(!a){
@@ -120,10 +151,18 @@ function scamble2state(S_S,scramble){
 	
 	const scr = scramble.split(" ")
 	for(let i=0;i<scr.length;i++){
-			const move_state = moves[scr[i]]
-			scrambled_state = scrambled_state.apply_move(move_state)
+		const move_state = moves[scr[i]]
+		scrambled_state = scrambled_state.apply_move(move_state)
 	}
 	return scrambled_state
+}
+
+function color_re_set(sulb){
+	let new_color = new Array(color_data.length)
+	for(let i=0;i<color_data.length;i++){
+		new_color[i] = color_data[color_modes[sulb][i]]
+	}
+	return new_color
 }
 
 solv_step = [
@@ -171,10 +210,10 @@ moves = {
 		[0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	),
-	'D': new State(
-		[0, 1, 2, 3, 5, 6, 7, 4],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 8],
+	'R': new State(
+		[0, 2, 6, 3, 4, 1, 5, 7],
+		[0, 1, 2, 0, 0, 2, 1, 0],
+		[0, 5, 9, 3, 4, 2, 6, 7, 8, 1, 10, 11],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	),
 	'L': new State(
@@ -183,10 +222,16 @@ moves = {
 		[11, 1, 2, 7, 4, 5, 6, 0, 8, 9, 10, 3],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	),
-	'R': new State(
-		[0, 2, 6, 3, 4, 1, 5, 7],
-		[0, 1, 2, 0, 0, 2, 1, 0],
-		[0, 5, 9, 3, 4, 2, 6, 7, 8, 1, 10, 11],
+	'F': new State(
+		[0, 1, 3, 7, 4, 5, 2, 6],
+		[0, 0, 1, 2, 0, 0, 2, 1],
+		[0, 1, 6, 10, 4, 5, 3, 7, 8, 9, 2, 11],
+		[0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0]
+	),
+	'D': new State(
+		[0, 1, 2, 3, 5, 6, 7, 4],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 8],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	),
 	'B': new State(
@@ -195,35 +240,68 @@ moves = {
 		[4, 8, 2, 3, 1, 5, 6, 7, 0, 9, 10, 11],
 		[1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
 	),
-	'F': new State(
-		[0, 1, 3, 7, 4, 5, 2, 6],
-		[0, 0, 1, 2, 0, 0, 2, 1],
-		[0, 1, 6, 10, 4, 5, 3, 7, 8, 9, 2, 11],
-		[0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0]
+	'x': new State(
+		[3, 2, 6, 7, 0, 1, 5, 4],
+		[2, 1, 2, 1, 1, 2, 1, 2],
+		[7, 5, 9, 11, 6, 2, 10, 3, 4, 1, 8, 0],
+		[0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+	),
+	'y': new State(
+		[3, 0, 1, 2, 7, 4, 5, 6],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[3, 0, 1, 2, 7, 4, 5, 6, 11, 8, 9, 10],
+		[1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+	),
+	'z': new State(
+		[4, 0, 3, 7, 5, 1, 2, 6],
+		[1, 2, 1, 2, 2, 1, 2, 1],
+		[8, 4, 6, 10, 0, 7, 3, 11, 1, 5, 2, 9],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	),
 }
 
 moves_face_c = [
 	[0,1,2,3],
-	[4,5,6,7],
-	[0,3,4,7],
 	[1,2,5,6],
-	[0,1,4,5],
+	[0,3,4,7],
 	[2,3,6,7],
+	[4,5,6,7],
+	[0,1,4,5],
+	[0,1,2,3,4,5,6,7],
+	[0,1,2,3,4,5,6,7],
+	[0,1,2,3,4,5,6,7],
 ]
 
 moves_face_e = [
 	[4,5,6,7],
-	[8,9,10,11],
-	[0,3,7,11],
 	[1,2,5,9],
-	[0,1,4,8],
+	[0,3,7,11],
 	[2,3,6,10],
+	[8,9,10,11],
+	[0,1,4,8],
+	[0,1,2,3,4,5,6,7,8,9,10,11],
+	[0,1,2,3,4,5,6,7,8,9,10,11],
+	[0,1,2,3,4,5,6,7,8,9,10,11],
+]
+
+moves_face_cn = [
+	[4],
+	[1],
+	[3],
+	[2],
+	[5],
+	[0],
+	[0,1,2,3,4,5],
+	[0,1,2,3,4,5],
+	[0,1,2,3,4,5],
 ]
 
 let move_names = []
 const faces = Object.keys(moves)
-const faces_rad = [-1,1,1,-1,1,-1]
+// console.log(faces)
+// U D L R B F
+// U R L F D B
+const faces_rad = [-1, -1,1,  -1,   1,1,  -1,-1,-1]
 for(let i=0;i<faces.length;i++){
 	move_names.push(faces[i], faces[i] + '2', faces[i] + '\'')
 	moves[faces[i] + '2'] = moves[faces[i]].apply_move(moves[faces[i]])
@@ -232,33 +310,59 @@ for(let i=0;i<faces.length;i++){
 // console.log(move_names)
 // console.log(move_names.length)
 // console.log(typeof move_names)
+color_data = ["#00f","#f00","#0f0","#f80","#fff","#ef0"]
+// 						青     赤     緑     オ    白     黄      
 
-color_data = ["#fff","#ef0","#f80","#f00","#00f","#0f0"]
+let color_modes = {
+	"x":[4,1,5,3,2,0],
+	"y":[3,0,1,2,4,5],
+	"z":[0,4,2,5,3,1],
+}
+
+const faces2 = Object.keys(color_modes)
+// console.log(faces2)
+for(let i=0;i<faces2.length;i++){
+	let m = [...color_modes[faces2[i]]]
+	for(let s=0;s<6;s++)		m[s] = color_modes[faces2[i]][m[s]]
+	color_modes[`${faces2[i]}2`] = [...m]
+	for(let s=0;s<6;s++)		m[s] = color_modes[faces2[i]][m[s]]
+	color_modes[`${faces2[i]}'`] = m
+}
+// console.log(color_modes)
 
 color_c = [
-	[0,2,4],
-	[0,4,3],
-	[0,3,5],
-	[0,5,2],
-	[1,4,2],
-	[1,3,4],
-	[1,5,3],
-	[1,2,5],
+	[4,3,0],
+	[4,0,1],
+	[4,1,2],
+	[4,2,3],
+	[5,0,3],
+	[5,1,0],
+	[5,2,1],
+	[5,3,2],
 ]
 
 color_e = [
+	[0,3],
+	[0,1],
+	[2,1],
+	[2,3],
+	[4,0],
+	[4,1],
 	[4,2],
 	[4,3],
-	[5,3],
+	[5,0],
+	[5,1],
 	[5,2],
-	[0,4],
-	[0,3],
-	[0,5],
-	[0,2],
-	[1,4],
-	[1,3],
-	[1,5],
-	[1,2],
+	[5,3],
+]
+
+color_cn = [
+	[0],
+	[1],
+	[2],
+	[3],
+	[4],
+	[5],
 ]
 
 let solved_state = new State(
@@ -273,11 +377,22 @@ function rotate(roates ,time = 1000,dist_time = 50){
 	let time_tank = 0
 	for(let i=0;i<roat_list.length;i++){
 		setTimeout(() => {
+			// console.log(`rotate roat_list[i] [${roat_list[i]}]`)
 			one_rotate_anim(roat_list[i],time)
 		}, time_tank)
 
 		setTimeout(() => {
-			scrambled_state = scamble2state(scrambled_state,roat_list[i])
+			if(roat_list[i][0] > "Z"){
+				// console.log(`小文字 [${roat_list[i]}]`)
+				scrambled_state = scrambled_state.hand_move(moves[roat_list[i]])
+				// console.log(color_data)
+				color_data = color_re_set(roat_list[i])
+				// console.log(`後`)
+				// console.log(color_data)
+			}
+			else{
+				scrambled_state = scamble2state(scrambled_state,roat_list[i])
+			}
 			one_rotate(scrambled_state, roat_list[i])
 			// console.log("rotate")
 			// scrambled_state.data_print()
@@ -292,14 +407,15 @@ function one_rotate(sc_st,roate){
 
 	const index = faces.indexOf(roate[0])
 
-	center = document.getElementById("corner").children
+	corner = document.getElementById("corner").children
 	edge = document.getElementById("edge").children
+	center = document.getElementById("center").children
 
 	// console.log(moves_face_c[index])
 	for(let i of moves_face_c[index]){
-			center[i].setAttribute('rotation', {x:0,y:0,z:0})
-			center[i].removeAttribute('animation')
-		let F = center[i].children
+			corner[i].setAttribute('rotation', {x:0,y:0,z:0})
+			corner[i].removeAttribute('animation')
+		let F = corner[i].children
 		for(let s=0;s<3;s++){
 	  F[s].setAttribute('material', 'color', color_data[color_c[sc_st.cp[i]][(s + 3 - sc_st.co[i]) % 3]])
 		}
@@ -313,15 +429,28 @@ function one_rotate(sc_st,roate){
 	  F[s].setAttribute('material', 'color', color_data[color_e[sc_st.ep[i]][(s + 2 - sc_st.eo[i]) % 2]])
 		}
 	}
+
+	for(let i of moves_face_cn[index]){
+		center[i].setAttribute('rotation', {x:0,y:0,z:0})
+		center[i].removeAttribute('animation')
+		let F = center[i].children
+	  F[0].setAttribute('material', 'color', color_data[i])
+		// let F = center[i].children
+		// for(let s=0;s<1;s++){
+	  // F[s].setAttribute('material', 'color', color_data[color_e[sc_st.ep[i]][(s + 2 - sc_st.eo[i]) % 2]])
+		// }
+	}
 	return sc_st
 }
 
 function color_set(sc_st){
-	center = document.getElementById("corner").children
+	// console.log(`----- color_set ----`)
+	corner = document.getElementById("corner").children
 	edge = document.getElementById("edge").children
+	center = document.getElementById("center").children
 
-	for(let i=0;i<center.length;i++){
-		let F = center[i].children
+	for(let i=0;i<corner.length;i++){
+		let F = corner[i].children
 		for(let s=0;s<3;s++){
 	  F[s].setAttribute('material', 'color', color_data[color_c[sc_st.cp[i]][(s + 3 - sc_st.co[i]) % 3]])
 		}
@@ -333,6 +462,19 @@ function color_set(sc_st){
 	  F[s].setAttribute('material', 'color', color_data[color_e[sc_st.ep[i]][(s + 2 - sc_st.eo[i]) % 2]])
 		}
 	}
+	// console.log(center)
+	for(let i=0;i<center.length;i++){
+		let F = center[i].children
+		// console.log(`i:${i}`)
+		// console.log(F)
+		// console.log(`color_cn[i][0]:${color_cn[i][0]} color_data[color_cn[i][0]]:${color_data[color_cn[i][0]]}`)
+		// console.log(F[0])
+	  F[0].setAttribute('material', 'color', color_data[i])
+
+		// for(let s=0;s<2;s++){
+	  // F[s].setAttribute('material', 'color', color_data[color_e[sc_st.ep[i]][(s + 2 - sc_st.eo[i]) % 2]])
+		// }
+	}
 }
 
 function one_rotate_anim(roate,time = 2000){
@@ -340,16 +482,22 @@ function one_rotate_anim(roate,time = 2000){
 	const rad = roate[1]
 	// console.log("roate "+roate+" len "+rotate.length+" index "+index+" rad "+rad)
 
-	center = document.getElementById("corner").children
+	corner = document.getElementById("corner").children
 	edge = document.getElementById("edge").children
+	center = document.getElementById("center").children
 
-	const vec = 'yyxxzz'
+						// URLFDB
+	const vec = 'yxxzyzxyz'
 	let size = 1
 	if(rad == '\'')	size = -1
 	else if(rad == '2')	size = 2
 
+	// console.log(`one_rotate_anim index:${index} size:${size}`)
+	// console.log(`one_rotate_anim moves_face_c[index] [${moves_face_c[index]}]`)
+	// console.log(`vec.charAt(index) [${vec.charAt(index)}] faces_rad[index] [${faces_rad[index]}]`)
+
 	for(let i of moves_face_c[index]){
-		center[i].setAttribute('animation', {
+		corner[i].setAttribute('animation', {
 			property: 'rotation.'+vec.charAt(index),
 			dur: time,
 			from: 0,
@@ -361,6 +509,17 @@ function one_rotate_anim(roate,time = 2000){
 
 	for(let i of moves_face_e[index]){
 		edge[i].setAttribute('animation', {
+			property: 'rotation.'+vec.charAt(index),
+			dur: time,
+			from: 0,
+			to: faces_rad[index] * 90 * size,
+			// easing: 'easeOutSine',
+			easing: 'linear',
+		})
+	}
+
+	for(let i of moves_face_cn[index]){
+		center[i].setAttribute('animation', {
 			property: 'rotation.'+vec.charAt(index),
 			dur: time,
 			from: 0,
@@ -387,36 +546,54 @@ let search = new Search()
 let sum_solution2 = []
 
 function AAA(){
-	solved_state = scamble2state(solved_state,scramble)
+	solved_state = scamble2state(solved_state,"R")
 	scrambled_state = solved_state
 	color_set(scrambled_state)
-	solved_state.data_print()
+	// solved_state.data_print()
+	// scamble2state(solved_state,"B' R B").data_print()
+	// scamble2state(solved_state,"U' R U").data_print()
+	// solved_state = scamble2state(solved_state,"B' R B")
+	// console.log(`hand_move`)
+	// solved_state = solved_state.hand_move(moves["x'"])
+	// console.log(``)
+	// color_set(solved_state)
+	// solved_state.data_print()
+}
 
+function CCC(){
+	console.log(`hand_move`)
+	scrambled_state = scrambled_state.hand_move(moves["x'"])
+	console.log(``)
+	color_set(scrambled_state)
+	scrambled_state.data_print()
+}
+
+function BBB(){
 	// solution = search.start_search(scrambled_state,0)
 	console.log(`clos  [${search.start_search(solved_state,0, 20)}]`)
 	sum_solution2 = sum_solution2.concat(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
-	console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
-	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	search.current_solution = []
+	// console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
+	// sum_solution2 = sum_solution2.concat(search.current_solution)
+	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	// search.current_solution = []
 
-	console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
-	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	search.current_solution = []
+	// console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
+	// sum_solution2 = sum_solution2.concat(search.current_solution)
+	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	// search.current_solution = []
 
-	console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
-	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	search.current_solution = []
+	// console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
+	// sum_solution2 = sum_solution2.concat(search.current_solution)
+	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	// search.current_solution = []
 
-	console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
-	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	search.current_solution = []
+	// console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
+	// sum_solution2 = sum_solution2.concat(search.current_solution)
+	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	// search.current_solution = []
 
 	console.log(sum_solution2)
 }
@@ -434,6 +611,9 @@ const M = {
 	'KeyD':'R',
 	'KeyE':'B',
 	'KeyC':'F',
+	'Digit1':'x',
+	'Digit2':'y',
+	'Digit3':'z',
 }
 const Pre_movement = [
 	"B'.1",
@@ -569,6 +749,7 @@ function one_motion(sulb){
 		Su = Lhands[sulb]
 	}
 	else{
+		// console.log(`one_motion sulb [${sulb}]`)
 		rotate(sulb,500)
 		return
 	}
