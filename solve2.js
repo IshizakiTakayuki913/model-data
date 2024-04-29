@@ -17,6 +17,9 @@ const presskeyboard = () => ({
 			'KeyD':false,
 			'KeyE':false,
 			'KeyC':false,
+			'Digit1':false,
+			'Digit2':false,
+			'Digit3':false,
 		}
 
 
@@ -35,7 +38,7 @@ const presskeyboard = () => ({
 			if(e.shiftKey) sulb += "'"
 			else if(this.data.Space_key) sulb += "2"
 			
-			// console.log(`${this.data.count++} [${sulb}] speed:${speed}`)
+			// console.log(`sulb [${sulb}]`)
 
 			// this.data,hand_vec = one_motion(sulb,this.data.hand_vec)
 			one_motion(sulb)
@@ -52,10 +55,10 @@ const presskeyboard = () => ({
 			}
 		})
 
-		Rhand.addEventListener('animationbegin',(e) => {
-			console.log(e)
-			console.log(e.name)
-		})
+		// Rhand.addEventListener('animationbegin',(e) => {
+		// 	console.log(e)
+		// 	console.log(e.name)
+		// })
 	},
 	tick() {
 		if(!sul_mode && sum_solution2.length>0){
