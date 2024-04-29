@@ -18,7 +18,7 @@
     AFRAME.registerComponent('camera-view', camera())
     
 		setTimeout(() => {
-			color_set(scrambled_state)
+			// color_set(scrambled_state)
       let han = document.getElementById('L-hand')
       // han.setAttribute('material', 'color', COLORS[lastIndex])
       han.object3D.traverse((node) => {
@@ -36,8 +36,13 @@
           node.material.needsUpdate = true
         }
       })
+      // console.log(moves["x'"])
       AAA()
-		}, 5000)
+		}, 2000)
+
+		// setTimeout(() => {
+    //   BBB()
+		// }, 4000)
   </script>
 
   <body id="body">
@@ -73,19 +78,37 @@
   </a-entity>
 
   <a-entity id="center" position="0 0 0">
-    <!-- <a-box id="center1" position="0 1.5 0" width="0.9" height="0.01" depth="0.9" color="#fff"></a-box>
-    <a-box id="center2" position="0 -1.5 0" width="0.9" height="0.01" depth="0.9" color="#ef0"></a-box>
-    <a-box id="center3" position="0 0 1.5" width="0.9" height="0.9" depth="0.01" color="#0f0"></a-box>
-    <a-box id="center4" position="0 0 -1.5" width="0.9" height="0.9" depth="0.01" color="#00f"></a-box>
-    <a-box id="center5" position="1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f00"></a-box>
-    <a-box id="center6" position="-1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f80"></a-box> -->
+    <a-entity id="center0" position="0 0 0">
+      <a-box position="0 0 -1.5" width="0.9" height="0.9" depth="0.01" color="#00f"></a-box>
+    </a-entity>
+        
+    <a-entity id="center1" position="0 0 0">
+      <a-box position="1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f00"></a-box>
+    </a-entity>
+      
+    <a-entity id="center2" position="0 0 0">
+      <a-box position="0 0 1.5" width="0.9" height="0.9" depth="0.01" color="#0f0"></a-box>
+    </a-entity>
+      
+    <a-entity id="center3" position="0 0 0">
+      <a-box position="-1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f80"></a-box>
+    </a-entity>
+      
+    <a-entity id="center4" position="0 0 0">
+      <a-box position="0 1.5 0" width="0.9" height="0.01" depth="0.9" color="#fff"></a-box>
+    </a-entity>
+      
+    <a-entity id="center5" position="0 0 0">
+      <a-box position="0 -1.5 0" width="0.9" height="0.01" depth="0.9" color="#ef0"></a-box>
+    </a-entity>
+
     
-    <a-cylinder id="center1" position="0 1.5 0" rotation="0 0 0" radius="0.45" height="0.01" color="#fff"></a-cylinder>
-    <a-cylinder id="center2" position="0 -1.5 0" rotation="0 0 0" radius="0.45" height="0.01" color="#ef0"></a-cylinder>
-    <a-cylinder id="center3" position="0 0 1.5" rotation="90 0 0" radius="0.45" height="0.01" color="#0f0"></a-cylinder>
-    <a-cylinder id="center4" position="0 0 -1.5" rotation="90 0 0" radius="0.45" height="0.01" color="#00f"></a-cylinder>
-    <a-cylinder id="center5" position="1.5 0 0" rotation="0 0 90" radius="0.45" height="0.01" color="#f00"></a-cylinder>
-    <a-cylinder id="center6" position="-1.5 0 0" rotation="0 0 90" radius="0.45" height="0.01" color="#f80"></a-cylinder>
+    <!-- <a-cylinder id="center0" position="0 0 -1.5" rotation="90 0 0" radius="0.45" height="0.01" color="#00f"></a-cylinder>
+    <a-cylinder id="center1" position="1.5 0 0" rotation="0 0 90" radius="0.45" height="0.01" color="#f00"></a-cylinder>
+    <a-cylinder id="center2" position="0 0 1.5" rotation="90 0 0" radius="0.45" height="0.01" color="#0f0"></a-cylinder>
+    <a-cylinder id="center3" position="-1.5 0 0" rotation="0 0 90" radius="0.45" height="0.01" color="#f80"></a-cylinder>
+    <a-cylinder id="center4" position="0 1.5 0" rotation="0 0 0" radius="0.45" height="0.01" color="#fff"></a-cylinder>
+    <a-cylinder id="center5" position="0 -1.5 0" rotation="0 0 0" radius="0.45" height="0.01" color="#ef0"></a-cylinder> -->
   </a-entity>
 
   <a-entity id="edge" position="0 0 0">
@@ -229,10 +252,31 @@
 
     </a-scene>
 
-    <div id="screen"></div>
     <div id="btn1" class="btn"></div>
-    <div id="btn2" class="btn">
-      <canvas id="canvas"></canvas>
-    </div>
   </body>
 </html>
+
+
+
+<!-- AFRAME.registerComponent('cursor-listener', {
+  init(){
+    var lastIndex = -1
+    var COLORS = ['red', 'green', 'blue']
+    this.el.addEventListener('click', function (evt) {
+      lastIndex = (lastIndex + 1) % COLORS.length
+      this.setAttribute('material', 'color', COLORS[lastIndex])
+      console.log('I was clicked at: ', evt.detail.intersection)
+      let c = 0
+      const han = document.getElementById('L-hand')
+      han.setAttribute('material', 'color', COLORS[lastIndex])
+      // han.object3D.traverse((node) => {
+      //   if (node.isMesh) {
+      //     node.material.transparent = true
+      //     node.material.color = new THREE.Color(`hsl(180, 100%, 50%)`)
+      //     node.material.needsUpdate = true
+      //   }
+      // })
+      // han.setAttribute('material', {opacity: opVal});
+    })
+  }
+}) -->
