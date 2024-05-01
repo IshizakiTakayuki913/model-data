@@ -10,12 +10,14 @@
     <script src="./solve.js"></script>
     <script src="./solve2.js"></script>
     <script src="./camera.js"></script>
+    <script src="./cubeTouch.js"></script>
     <link rel="stylesheet" href="./style.css">
   </head>
 
   <script type="text/javascript">
     AFRAME.registerComponent('press-key-board', presskeyboard())
     AFRAME.registerComponent('camera-view', camera())
+    // AFRAME.registerComponent('cube-touch', cubetouch())
     
 		setTimeout(() => {
 			// color_set(scrambled_state)
@@ -46,16 +48,16 @@
   </script>
 
   <body id="body">
-    <a-scene press-key-board camera-view>
+    <a-scene id="scene" press-key-board camera-view>
 
 <a-assets>
   <a-asset-item id="model_hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
 </a-assets>
 
-<a-sky color="#4CC3D9"></a-sky>
-<a-plane class="clickable"  position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
+<a-sky id="sky" color="#4CC3D9"></a-sky>
+<a-plane position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
 
-<a-entity position="0 6 0" rotation="0 0 0">
+<a-entity id="root" position="0 6 0" rotation="0 0 0">
   <a-entity
     id="L-hand"
     position="0 0 0"
@@ -79,29 +81,28 @@
 
   <a-entity id="center" position="0 0 0">
     <a-entity id="center0" position="0 0 0">
-      <a-box position="0 0 -1.5" width="0.9" height="0.9" depth="0.01" color="#00f"></a-box>
+      <a-box id="00" class="clickable" position="0 0 -1.5" width="0.9" height="0.9" depth="0.01" color="#00f"></a-box>
     </a-entity>
         
     <a-entity id="center1" position="0 0 0">
-      <a-box position="1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f00"></a-box>
+      <a-box id="01" class="clickable" position="1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f00"></a-box>
     </a-entity>
       
     <a-entity id="center2" position="0 0 0">
-      <a-box position="0 0 1.5" width="0.9" height="0.9" depth="0.01" color="#0f0"></a-box>
+      <a-box id="02" class="clickable" position="0 0 1.5" width="0.9" height="0.9" depth="0.01" color="#0f0"></a-box>
     </a-entity>
       
     <a-entity id="center3" position="0 0 0">
-      <a-box position="-1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f80"></a-box>
+      <a-box id="03" class="clickable" position="-1.5 0 0" width="0.01" height="0.9" depth="0.9" color="#f80"></a-box>
     </a-entity>
       
     <a-entity id="center4" position="0 0 0">
-      <a-box position="0 1.5 0" width="0.9" height="0.01" depth="0.9" color="#fff"></a-box>
+      <a-box id="04" class="clickable" position="0 1.5 0" width="0.9" height="0.01" depth="0.9" color="#fff"></a-box>
     </a-entity>
       
     <a-entity id="center5" position="0 0 0">
-      <a-box position="0 -1.5 0" width="0.9" height="0.01" depth="0.9" color="#ef0"></a-box>
+      <a-box id="05" class="clickable" position="0 -1.5 0" width="0.9" height="0.01" depth="0.9" color="#ef0"></a-box>
     </a-entity>
-
     
     <!-- <a-cylinder id="center0" position="0 0 -1.5" rotation="90 0 0" radius="0.45" height="0.01" color="#00f"></a-cylinder>
     <a-cylinder id="center1" position="1.5 0 0" rotation="0 0 90" radius="0.45" height="0.01" color="#f00"></a-cylinder>
@@ -112,171 +113,146 @@
   </a-entity>
 
   <a-entity id="edge" position="0 0 0">
-    <a-entity id="edge0" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 0 -1.5" width="1" height="0.9" depth="0.01" color="#00f"></a-box>
-      <a-box position="-1.5 0 -1" width="0.01" height="0.9" depth="1" color="#f80"></a-box>
+    <a-entity id="edge0" position="0 0 0">
+      <a-box id="06" class="clickable" position="-1 0 -1.5" width="1" height="0.9" depth="0.01" color="#00f"></a-box>
+      <a-box id="07" class="clickable" position="-1.5 0 -1" width="0.01" height="0.9" depth="1" color="#f80"></a-box>
       <a-box position="-1 0 -1" width="1" height="0.9" depth="1" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge1" quaterinon-rotation position="0 0 0">
-      <a-box position="1 0 -1.5" width="1" height="0.9" depth="0.01" color="#00f"></a-box>
-      <a-box position="1.5 0 -1" width="0.01" height="0.9" depth="1" color="#f00"></a-box>
+    <a-entity id="edge1" position="0 0 0">
+      <a-box id="08" class="clickable" position="1 0 -1.5" width="1" height="0.9" depth="0.01" color="#00f"></a-box>
+      <a-box id="09" class="clickable" position="1.5 0 -1" width="0.01" height="0.9" depth="1" color="#f00"></a-box>
       <a-box position="1 0 -1" width="1" height="0.9" depth="1" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge2" quaterinon-rotation position="0 0 0">
-      <a-box position="1 0 1.5" width="1" height="0.9" depth="0.01" color="#0f0"></a-box>
-      <a-box position="1.5 0 1" width="0.01" height="0.9" depth="1" color="#f00"></a-box>
+    <a-entity id="edge2" position="0 0 0">
+      <a-box id="10" class="clickable" position="1 0 1.5" width="1" height="0.9" depth="0.01" color="#0f0"></a-box>
+      <a-box id="11" class="clickable" position="1.5 0 1" width="0.01" height="0.9" depth="1" color="#f00"></a-box>
       <a-box position="1 0 1" width="1" height="0.9" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="edge3" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 0 1.5" width="1" height="0.9" depth="0.01" color="#0f0"></a-box>
-      <a-box position="-1.5 0 1" width="0.01" height="0.9" depth="1" color="#f80"></a-box>
+    <a-entity id="edge3" position="0 0 0">
+      <a-box id="12" class="clickable" position="-1 0 1.5" width="1" height="0.9" depth="0.01" color="#0f0"></a-box>
+      <a-box id="13" class="clickable" position="-1.5 0 1" width="0.01" height="0.9" depth="1" color="#f80"></a-box>
       <a-box position="-1 0 1" width="1" height="0.9" depth="1" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge4" quaterinon-rotation position="0 0 0">
-      <a-box position="0 1.5 -1" width="0.9" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="0 1 -1.5" width="0.9" height="1" depth="0.01" color="#00f"></a-box>
+    <a-entity id="edge4" position="0 0 0">
+      <a-box id="14" class="clickable" position="0 1.5 -1" width="0.9" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="15" class="clickable" position="0 1 -1.5" width="0.9" height="1" depth="0.01" color="#00f"></a-box>
       <a-box position="0 1 -1" width="0.9" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="edge5" quaterinon-rotation position="0 0 0">
-      <a-box position="1 1.5 0" width="1" height="0.01" depth="0.9" color="#fff"></a-box>
-      <a-box position="1.5 1 0" width="0.01" height="1" depth="0.9" color="#f00"></a-box>
+    <a-entity id="edge5" position="0 0 0">
+      <a-box id="16" class="clickable" position="1 1.5 0" width="1" height="0.01" depth="0.9" color="#fff"></a-box>
+      <a-box id="17" class="clickable" position="1.5 1 0" width="0.01" height="1" depth="0.9" color="#f00"></a-box>
       <a-box position="1 1 0" width="1" height="1" depth="0.9" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge6" quaterinon-rotation position="0 0 0">
-      <a-box position="0 1.5 1" width="0.9" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="0 1 1.5" width="0.9" height="1" depth="0.01" color="#0f0"></a-box>
+    <a-entity id="edge6" position="0 0 0">
+      <a-box id="18" class="clickable" position="0 1.5 1" width="0.9" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="19" class="clickable" position="0 1 1.5" width="0.9" height="1" depth="0.01" color="#0f0"></a-box>
       <a-box position="0 1 1" width="0.9" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="edge7" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 1.5 0" width="1" height="0.01" depth="0.9" color="#fff"></a-box>
-      <a-box position="-1.5 1 0" width="0.01" height="1" depth="0.9" color="#f80"></a-box>
+    <a-entity id="edge7" position="0 0 0">
+      <a-box id="20" class="clickable" position="-1 1.5 0" width="1" height="0.01" depth="0.9" color="#fff"></a-box>
+      <a-box id="21" class="clickable" position="-1.5 1 0" width="0.01" height="1" depth="0.9" color="#f80"></a-box>
       <a-box position="-1 1 0" width="1" height="1" depth="0.9" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge8" quaterinon-rotation position="0 0 0">
-      <a-box position="0 -1.5 -1" width="0.9" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="0 -1 -1.5" width="0.9" height="1" depth="0.01" color="#00f"></a-box>
+    <a-entity id="edge8" position="0 0 0">
+      <a-box id="22" class="clickable" position="0 -1.5 -1" width="0.9" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="23" class="clickable" position="0 -1 -1.5" width="0.9" height="1" depth="0.01" color="#00f"></a-box>
       <a-box position="0 -1 -1" width="0.9" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
     
-    <a-entity id="edge9" quaterinon-rotation position="0 0 0">
-      <a-box position="1 -1.5 0" width="1" height="0.01" depth="0.9" color="#ef0"></a-box>
-      <a-box position="1.5 -1 0" width="0.01" height="1" depth="0.9" color="#f00"></a-box>
+    <a-entity id="edge9" position="0 0 0">
+      <a-box id="24" class="clickable" position="1 -1.5 0" width="1" height="0.01" depth="0.9" color="#ef0"></a-box>
+      <a-box id="25" class="clickable" position="1.5 -1 0" width="0.01" height="1" depth="0.9" color="#f00"></a-box>
       <a-box position="1 -1 0" width="1" height="1" depth="0.9" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="edge10" quaterinon-rotation position="0 0 0">
-      <a-box position="0 -1.5 1" width="0.9" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="0 -1 1.5" width="0.9" height="1" depth="0.01" color="#0f0"></a-box>
+    <a-entity id="edge10" position="0 0 0">
+      <a-box id="26" class="clickable" position="0 -1.5 1" width="0.9" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="27" class="clickable" position="0 -1 1.5" width="0.9" height="1" depth="0.01" color="#0f0"></a-box>
       <a-box position="0 -1 1" width="0.9" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="edge11" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 -1.5 0" width="1" height="0.01" depth="0.9" color="#ef0"></a-box>
-      <a-box position="-1.5 -1 0" width="0.01" height="1" depth="0.9" color="#f80"></a-box>
+    <a-entity id="edge11" position="0 0 0">
+      <a-box id="28" class="clickable" position="-1 -1.5 0" width="1" height="0.01" depth="0.9" color="#ef0"></a-box>
+      <a-box id="29" class="clickable" position="-1.5 -1 0" width="0.01" height="1" depth="0.9" color="#f80"></a-box>
       <a-box position="-1 -1 0" width="1" height="1" depth="0.9" color="#AAA"></a-box>
     </a-entity>
   </a-entity>
 
   <a-entity id="corner" position="0 0 0">
-    <a-entity id="corner0" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 1.5 -1" width="1" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="-1.5 1 -1" width="0.01" height="1" depth="1" color="#f80"></a-box>
-      <a-box position="-1 1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
+    <a-entity id="corner0" position="0 0 0">
+      <a-box id="30" class="clickable" position="-1 1.5 -1" width="1" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="31" class="clickable" position="-1.5 1 -1" width="0.01" height="1" depth="1" color="#f80"></a-box>
+      <a-box id="32" class="clickable" position="-1 1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
       <a-box position="-1 1 -1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner1" quaterinon-rotation position="0 0 0">
-      <a-box position="1 1.5 -1" width="1" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="1 1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
-      <a-box position="1.5 1 -1" width="0.01" height="1" depth="1" color="#f00"></a-box>
+    <a-entity id="corner1" position="0 0 0">
+      <a-box id="33" class="clickable" position="1 1.5 -1" width="1" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="34" class="clickable" position="1 1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
+      <a-box id="35" class="clickable" position="1.5 1 -1" width="0.01" height="1" depth="1" color="#f00"></a-box>
       <a-box position="1 1 -1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner2" quaterinon-rotation position="0 0 0">
-      <a-box position="1 1.5 1" width="1" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="1.5 1 1" width="0.01" height="1" depth="1" color="#f00"></a-box>
-      <a-box position="1 1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
+    <a-entity id="corner2" position="0 0 0">
+      <a-box id="36" class="clickable" position="1 1.5 1" width="1" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="37" class="clickable" position="1.5 1 1" width="0.01" height="1" depth="1" color="#f00"></a-box>
+      <a-box id="38" class="clickable" position="1 1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
       <a-box position="1 1 1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner3" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 1.5 1" width="1" height="0.01" depth="1" color="#fff"></a-box>
-      <a-box position="-1 1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
-      <a-box position="-1.5 1 1" width="0.01" height="1" depth="1" color="#f80"></a-box>
+    <a-entity id="corner3" position="0 0 0">
+      <a-box id="39" class="clickable" position="-1 1.5 1" width="1" height="0.01" depth="1" color="#fff"></a-box>
+      <a-box id="40" class="clickable" position="-1 1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
+      <a-box id="41" class="clickable" position="-1.5 1 1" width="0.01" height="1" depth="1" color="#f80"></a-box>
       <a-box position="-1 1 1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner4" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 -1.5 -1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="-1 -1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
-      <a-box position="-1.5 -1 -1" width="0.01" height="1" depth="1" color="#f80"></a-box>
+    <a-entity id="corner4" position="0 0 0">
+      <a-box id="42" class="clickable" position="-1 -1.5 -1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="43" class="clickable" position="-1 -1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
+      <a-box id="44" class="clickable" position="-1.5 -1 -1" width="0.01" height="1" depth="1" color="#f80"></a-box>
       <a-box position="-1 -1 -1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner5" quaterinon-rotation position="0 0 0">
-      <a-box position="1 -1.5 -1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="1.5 -1 -1" width="0.01" height="1" depth="1" color="#f00"></a-box>
-      <a-box position="1 -1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
+    <a-entity id="corner5" position="0 0 0">
+      <a-box id="45" class="clickable" position="1 -1.5 -1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="46" class="clickable" position="1.5 -1 -1" width="0.01" height="1" depth="1" color="#f00"></a-box>
+      <a-box id="47" class="clickable" position="1 -1 -1.5" width="1" height="1" depth="0.01" color="#00F"></a-box>
       <a-box position="1 -1 -1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner6" quaterinon-rotation position="0 0 0">
-      <a-box position="1 -1.5 1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="1 -1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
-      <a-box position="1.5 -1 1" width="0.01" height="1" depth="1" color="#f00"></a-box>
+    <a-entity id="corner6" position="0 0 0">
+      <a-box id="48" class="clickable" position="1 -1.5 1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="49" class="clickable" position="1 -1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
+      <a-box id="50" class="clickable" position="1.5 -1 1" width="0.01" height="1" depth="1" color="#f00"></a-box>
       <a-box position="1 -1 1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
 
-    <a-entity id="corner7" quaterinon-rotation position="0 0 0">
-      <a-box position="-1 -1.5 1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
-      <a-box position="-1.5 -1 1" width="0.01" height="1" depth="1" color="#f80"></a-box>
-      <a-box position="-1 -1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
+    <a-entity id="corner7" position="0 0 0">
+      <a-box id="51" class="clickable" position="-1 -1.5 1" width="1" height="0.01" depth="1" color="#ef0"></a-box>
+      <a-box id="52" class="clickable" position="-1.5 -1 1" width="0.01" height="1" depth="1" color="#f80"></a-box>
+      <a-box id="53" class="clickable" position="-1 -1 1.5" width="1" height="1" depth="0.01" color="#0f0"></a-box>
       <a-box position="-1 -1 1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
   </a-entity>
 </a-entity> 
 
-<a-entity id="camera" position="0 6 0" rotation="0 0 0">
-  <a-camera id="camera2" look-controls="enabled: false" wasd-controls-enabled="false" position="0 0 10" rotation="0 0 0">
-    <a-entity cursor="rayOrigin: mouse;" raycaster="objects: .clickable" />
+<a-entity id="camera" position="0 6 0" rotation="-30 0 0">
+  <a-camera cursor="rayOrigin: mouse;" raycaster="objects: .clickable" id="camera2" look-controls="enabled: false" wasd-controls-enabled="false" position="0 0 6" rotation="0 0 0">
   </a-camera>
 </a-entity>
 
     </a-scene>
 
     <div id="btn1" class="btn"></div>
+    <!-- <div id="screen"></div> -->
   </body>
 </html>
-
-
-
-<!-- AFRAME.registerComponent('cursor-listener', {
-  init(){
-    var lastIndex = -1
-    var COLORS = ['red', 'green', 'blue']
-    this.el.addEventListener('click', function (evt) {
-      lastIndex = (lastIndex + 1) % COLORS.length
-      this.setAttribute('material', 'color', COLORS[lastIndex])
-      console.log('I was clicked at: ', evt.detail.intersection)
-      let c = 0
-      const han = document.getElementById('L-hand')
-      han.setAttribute('material', 'color', COLORS[lastIndex])
-      // han.object3D.traverse((node) => {
-      //   if (node.isMesh) {
-      //     node.material.transparent = true
-      //     node.material.color = new THREE.Color(`hsl(180, 100%, 50%)`)
-      //     node.material.needsUpdate = true
-      //   }
-      // })
-      // han.setAttribute('material', {opacity: opVal});
-    })
-  }
-}) -->
