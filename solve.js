@@ -86,7 +86,7 @@ class Search {
 		// console.log(`prev_move [${prev_move}]`)
 
 		for(const move_name of move_names){
-			console.log(`move_name [${move_name}]`)
+			// console.log(`move_name [${move_name}]`)
 			const a= is_move_available(prev_move, move_name)
 			// console.log(`prev_move [${prev_move}] move [${move_name}] t ${a}`)
 			if(!a){
@@ -303,7 +303,7 @@ const faces = Object.keys(moves)
 // U R L F D B
 const faces_rad = [-1, -1,1,  -1,   1,1,  -1,-1,-1]
 for(let i=0;i<faces.length;i++){
-	move_names.push(faces[i], faces[i] + '2', faces[i] + '\'')
+	if(i < 6)	move_names.push(faces[i], faces[i] + '2', faces[i] + '\'')
 	moves[faces[i] + '2'] = moves[faces[i]].apply_move(moves[faces[i]])
 	moves[faces[i] + '\''] = moves[faces[i]].apply_move(moves[faces[i]]).apply_move(moves[faces[i]])
 }
@@ -544,6 +544,7 @@ let scrambled_state = solved_state
 
 let search = new Search()
 let sum_solution2 = []
+let btn_mode = 0
 
 function AAA(){
 	solved_state = scamble2state(solved_state,"R")
@@ -569,33 +570,35 @@ function CCC(){
 }
 
 function BBB(){
+	solved_state = scrambled_state
 	// solution = search.start_search(scrambled_state,0)
 	console.log(`clos  [${search.start_search(solved_state,0, 20)}]`)
 	sum_solution2 = sum_solution2.concat(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
-	// console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
-	// sum_solution2 = sum_solution2.concat(search.current_solution)
-	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	// search.current_solution = []
+	console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-	// console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
-	// sum_solution2 = sum_solution2.concat(search.current_solution)
-	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	// search.current_solution = []
+	console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-	// console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
-	// sum_solution2 = sum_solution2.concat(search.current_solution)
-	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	// search.current_solution = []
+	console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
-	// console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
-	// sum_solution2 = sum_solution2.concat(search.current_solution)
-	// solved_state = scamble2state(solved_state,search.current_solution.join(' '))
-	// search.current_solution = []
+	console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
+	sum_solution2 = sum_solution2.concat(search.current_solution)
+	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
+	search.current_solution = []
 
 	console.log(sum_solution2)
+	btn_mode = 1
 }
 
 // console.log(`current_solution`)
@@ -707,6 +710,7 @@ function motions(){ //roates
 	// console.log(`this.data.sul [${sum_solution2.join(' ')}] sulb ${sum_solution2[0]}`)
 	if(sum_solution2.length == 0){
 		console.log(`sulb no`)
+		btn_mode = 0
 		return
 	}
 	// console.log(roates)
@@ -722,6 +726,7 @@ function motions(){ //roates
 	let time_tank = 0
 	time_tank += one_motion(sum_solution2[0])
 	sum_solution2.shift()
+	// console.log(sum_solution2.length)
 	
 	setTimeout(() => {
 		// console.log(`time_tank:${time_tank}`)
