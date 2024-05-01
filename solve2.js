@@ -61,23 +61,9 @@ const presskeyboard = () => ({
 		// })
 	},
 	tick() {
-		if(!sul_mode && sum_solution2.length>0){
+		if(!sul_mode){
 				motions()
 				sul_mode = true
 			}
 	},
 })
-
-
-// const Lhands = {
-// 	"U"   :"U.1"  ,
-// 	"U'"  :"U'.1" ,
-// 	"D"   :"D.1"  ,
-// 	"D'"  :"D'.1" ,
-// 	"L"   :"L.1"  ,
-// 	"L'"  :"L'.1" ,
-// 	"B"   :"B.1"  ,
-// 	"B'"  :"B'.1" ,
-// 	"F"   :"F.1"  ,
-// 	"F'"  :"F'.1" ,
-// }
