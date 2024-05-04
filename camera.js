@@ -1,27 +1,15 @@
-const touchMove = [
-	{4:"B'",7:"L",8:"B",11:"L'",},
-	{4:"B",5:"R'",8:"B'",9:"R",},
-	{5:"R",6:"F'",9:"R'",10:"F",},
-	{6:"F",7:"L'",10:"F'",11:"L",},
-	{0:"B",1:"B'",5:"U",7:"U'",},
-	{1:"R",2:"R'",4:"U'",6:"U",},
-	{2:"F",3:"F'",5:"U'",7:"U",},
-	{0:"L'",3:"L",4:"U",6:"U'",},
-	{0:"B'",1:"B'",9:"D'",11:"D",},
-	{1:"R'",2:"R",8:"D",10:"D'",},
-	{2:"F'",3:"F",9:"D",11:"D'",},
-	{0:"L",3:"L'",8:"D'",10:"D",},
-]
 
 const camera = () => ({
 	schema: {
 		view_pres_rad: {type: 'vec3', default: {x:0, y:0, z:0}},
 		dis: {type: 'vec2', default: {x:0, y:0}},
 		camera_dist: {type: 'float', default: 0},
+		rayCube: { type: 'selector' },
+		rayFace: { type: 'selector' },
 	},
-	
+	// dependency: ['raycaster'],
+
 	init() {
-		// const screen = document.getElementById("screen")
 		const btn1 = document.getElementById("btn1")
 		const camera = document.getElementById("camera")
 		const camera2 = document.getElementById("camera2")
@@ -30,32 +18,100 @@ const camera = () => ({
 
 		this.data.camera_dist = camera2.object3D.position.z
 
-		this.parts = ""
+		this.parts = undefined
 
 		this.positionP = undefined
 		this.zoom_mode = false
 		this.root_mode = false
 
+		this.mouse_or_touch = false
+
+		this.plane = [
+			document.getElementById('planeY'),
+			document.getElementById('planeX'),
+			document.getElementById('planeZ'),
+		]
+
+		this.index = ['planeY', 'planeX', 'planeZ']
+		this.indexM = [
+			{x:1, y:0, z:1},
+			{x:0, y:1, z:1},
+			{x:1, y:1, z:0},
+		]
+
+		this.atan = [
+			["x","z"],
+			["z","y"],
+			["y","x"],
+		]
+
+		this.ziku = ['boxY', 'boxX', 'boxZ']
+		this.rayFace
+		this.targetFace = []
+		this.startRad = []
+
+
+		this.el.addEventListener('raycaster-intersection', (e) => {
+			if (e.target !== this.data.rayFace) return; // 対応するレイキャスターのみ反応
+
+			this.rayFace = e.target.components.raycaster
+			for(let i=0;i<e.detail.els.length;i++){
+				const ind = this.index.indexOf(e.detail.els[i].id)
+				// console.log(`id [${e.detail.els[i].id}] index [${ind}]`)
+				this.targetFace[ind] = e.detail.els[i]
+			}
+		})
+
+		this.el.addEventListener('raycaster-intersection-cleared', (e) => {
+			if (e.target !== this.data.rayFace) return; // 対応するレイキャスターのみ反応
+
+			for(let i=0;i<e.detail.clearedEls.length;i++){
+				const ind = this.index.indexOf(e.detail.clearedEls[i].id)
+				this.targetFace[ind] = null
+				// console.log(`id [${e.detail.clearedEls[i].id}] index [${ind}]`)
+			}
+		})
+
 		root.addEventListener("mousedown", (e) => {
 			if(this.root_mode)	return
 			this.parts = e.target.parentElement.id
 			// console.log(`mousedown ID [${e.target.parentElement.id}]`)
-			this.touch_list = e.TouchList
+
+			const regex = /[^a-z]/g;
+			const regex2 = /[^0-9]/g;
+			const parts_type = this.parts.replace(regex, "")
+			const be = this.parts.replace(regex2, "")
+			if(!(parts_type === "edge" || parts_type === "center" || parts_type === "corner"))	return
+
 			this.root_mode = true
+			this.parts = be
+
+			this.rayCube = this.data.rayCube.components.raycaster
+			this.targetCube = e.target
+
+			const pos = this.rayCube.getIntersection(this.targetCube)
+
+			this.startRad[0] = Math.atan2(pos.point.x, pos.point.z)
+			this.plane[0].object3D.position.y = pos.point.y
+			this.plane[0].classList.add("ground")
+			
+			this.startRad[1] = Math.atan2(pos.point.z, pos.point.y)
+			this.plane[1].object3D.position.x = pos.point.x
+			this.plane[1].classList.add("ground")
+			
+			this.startRad[2] = Math.atan2(pos.point.y, pos.point.x)
+			this.plane[2].object3D.position.z = pos.point.z
+			this.plane[2].classList.add("ground")
 		})
 
-		root.addEventListener("mouseup", (e) => {
+		this.el.addEventListener("raycaster-mouseup", (e) => {
 			if(!this.root_mode)	return
-			const regex = /[^0-9]/g;
-			const be = parseInt(this.parts.replace(regex, ""))
-			const af = parseInt(e.target.parentElement.id.replace(regex, ""))
-			console.log(`mouseup [${this.parts}] for[${e.target.parentElement.id}] move [${touchMove[be][af]}]`)
 
+			this.parts = undefined
 			this.root_mode = false
-
-			if(touchMove[be][af] != undefined){
-				one_motion(touchMove[be][af])
-			}
+			for(let i=0;i<3;i++)
+				this.plane[i].classList.remove("ground")
+			// console.log(`remove("clickable")`)
 		})
 
 		btn1.addEventListener('click', () => {
@@ -68,6 +124,7 @@ const camera = () => ({
 		})
 
 		canvas.addEventListener('touchstart', (e) => {
+			this.mouse_or_touch = true
 			if(this.root_mode)	return
 			// console.log(`touchstart target:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
 			if(e.touches.length === 1 && !this.zoom_mode){
@@ -90,7 +147,7 @@ const camera = () => ({
 			if(e.touches.length === 1 && this.zoom_mode){
 				let dx = {x:e.touches[0].clientX - this.positionP.x, y:e.touches[0].clientY - this.positionP.y}
 				camera.object3D.rotation.y = (this.data.view_pres_rad.y - dx.x/150) % (2*Math.PI)
-				camera.object3D.rotation.x = Math.max(Math.min(this.data.view_pres_rad.x - dx.y/150,Math.PI/2),-Math.PI/2)
+				camera.object3D.rotation.x = Math.max(Math.min(this.data.view_pres_rad.x - dx.y/150,85*Math.PI/180),-85*Math.PI/180)
 			}
 			else if(e.touches.length === 2 && this.zoom_mode){
 				console.log(`touchmove 2 `)
@@ -102,10 +159,13 @@ const camera = () => ({
 		})
 
 		canvas.addEventListener('touchend', (e) => {
+			this.mouse_or_touch = false
 			this.zoom_mode = false
+			this.el.emit('raycaster-mouseup')
 		})
 		
 		canvas.addEventListener('mousedown', (e) => {
+			this.mouse_or_touch = true
 			if(this.root_mode)	return
 			// console.log(`mousedown target:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
 			// console.log(e.target)
@@ -123,22 +183,26 @@ const camera = () => ({
 			if(this.mouse_ples){
 				let dx = {x:e.clientX - this.positionP.x, y:e.clientY - this.positionP.y}
 				camera.object3D.rotation.y = (this.data.view_pres_rad.y - dx.x/150) % (2*Math.PI)
-				camera.object3D.rotation.x = Math.max(Math.min(this.data.view_pres_rad.x - dx.y/150,Math.PI/3),-Math.PI/3)
+				camera.object3D.rotation.x = Math.max(Math.min(this.data.view_pres_rad.x - dx.y/150,85*Math.PI/180),-85*Math.PI/180)
 			}
 		})
 		
 		canvas.addEventListener('mouseup', (e) => {
+			this.mouse_or_touch = false
+			this.el.emit('raycaster-mouseup')
 			if(this.root_mode)	return
 			// console.log(`mouseup target:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
 			this.mouse_ples = false
 		})
 
 		canvas.addEventListener('mouseleave', (e) => {
-			if(this.root_mode)	return
-			if(e.target.tagName === 'BODY'){
-				this.mouse_ples = false
+			this.mouse_or_touch = false
+			if(e.target.tagName === 'CANVAS'){
 				// console.log(`mouseleave target:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
+				this.mouse_ples = false
+				this.el.emit('raycaster-mouseup')
 			}
+			if(this.root_mode)	return
 		})
 
 		canvas.addEventListener('wheel', (e) => {
@@ -149,4 +213,21 @@ const camera = () => ({
 			camera2.object3D.position.z = this.data.camera_dist
 		});
 	},
+	tick(){
+		// console.log(this.targetFace)
+		for(let i=0;i<3;i++){
+			if (!this.rayFace || !this.targetFace[i]) continue;
+			const item = this.rayFace.getIntersection(this.targetFace[i])
+			// console.log(`  ${this.rayFace.id}`)
+			// if(item === undefined || item == null)	continue
+			const box = document.getElementById(this.ziku[i])
+			box.object3D.position.copy({x:item.point.x * this.indexM[i].x, y:item.point.y * this.indexM[i].y, z:item.point.z * this.indexM[i].z})
+			// console.log(Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]))
+
+			// this.startRad[2] = 
+			this.plane[i].children[0].setAttribute("value", (Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]) - this.startRad[i]) / (Math.PI/180))
+			
+		}
+	},
+	
 })
