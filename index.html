@@ -6,11 +6,12 @@
     
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.8thwall.com/web/aframe/aframe-extras-6.1.1.min.js"></script>
-
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.min.js"></script> -->
+    
     <script src="./solve.js"></script>
     <script src="./solve2.js"></script>
     <script src="./camera.js"></script>
-    <script src="./cubeTouch.js"></script>
+    <!-- <script src="./cubeTouch.js"></script> -->
     <link rel="stylesheet" href="./style.css">
   </head>
 
@@ -21,23 +22,23 @@
     
 		setTimeout(() => {
 			// color_set(scrambled_state)
-      let han = document.getElementById('L-hand')
+      // let han = document.getElementById('L-hand')
       // han.setAttribute('material', 'color', COLORS[lastIndex])
-      han.object3D.traverse((node) => {
-        if (node.isMesh) {
-          node.material.transparent = true
-          node.material.opacity = 0.7
-          node.material.needsUpdate = true
-        }
-      })
-      han = document.getElementById('R-hand')
-      han.object3D.traverse((node) => {
-        if (node.isMesh) {
-          node.material.transparent = true
-          node.material.opacity = 0.7
-          node.material.needsUpdate = true
-        }
-      })
+      // han.object3D.traverse((node) => {
+      //   if (node.isMesh) {
+      //     node.material.transparent = true
+      //     node.material.opacity = 0.7
+      //     node.material.needsUpdate = true
+      //   }
+      // })
+      // han = document.getElementById('R-hand')
+      // han.object3D.traverse((node) => {
+      //   if (node.isMesh) {
+      //     node.material.transparent = true
+      //     node.material.opacity = 0.7
+      //     node.material.needsUpdate = true
+      //   }
+      // })
       // console.log(moves["x'"])
       AAA()
 		}, 2000)
@@ -48,16 +49,17 @@
   </script>
 
   <body id="body">
-    <a-scene id="scene" press-key-board camera-view>
+    <a-scene id="scene" press-key-board>
 
 <a-assets>
-  <a-asset-item id="model_hand" src="./sub-hand.glb"></a-asset-item>
+  <a-asset-item id="model_hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
 </a-assets>
 
-<a-sky id="sky" color="#4CC3D9"></a-sky>
-<a-plane position="0 0 0" rotation="-90 0 0" color="#55C" height="20" width="20"></a-plane>
+<a-sky id="sky" color="#000"></a-sky>
+<a-plane position="0 -5 0" rotation="-90 0 0" color="#DDD" height="10" width="10"></a-plane>
 
-<a-entity id="root" position="0 6 0" rotation="0 0 0">
+<a-entity id="root" position="0 0 0" rotation="0 0 0">
+
   <a-entity
     id="L-hand"
     position="0 0 0"
@@ -243,12 +245,50 @@
       <a-box position="-1 -1 1" width="1" height="1" depth="1" color="#AAA"></a-box>
     </a-entity>
   </a-entity>
-</a-entity> 
 
-<a-entity id="camera" position="0 6 0" rotation="-30 0 0">
-  <a-camera cursor="rayOrigin: mouse;" raycaster="objects: .clickable" id="camera2" look-controls="enabled: false" wasd-controls-enabled="false" position="0 0 6" rotation="0 0 0">
-  </a-camera>
+  <a-entity id="camera"position="0 0 0" rotation="-30 30 0">
+    <a-camera 
+      id="camera2"
+      camera-view="rayCube: #touch-cube; rayFace: #touch-face"
+      look-controls="enabled: false"
+      wasd-controls-enabled="false"
+      position="0 0 10">
+
+      <a-entity
+        id="touch-face"
+        cursor="rayOrigin: mouse;"
+        raycaster="objects: .ground; direction:0 0 -1">
+      </a-entity>
+
+      <a-entity
+        id="touch-cube"
+        cursor="rayOrigin: mouse;"
+        raycaster="objects: .clickable; direction:0 0 -1">
+      </a-entity>
+    </a-camera>
+  </a-entity>
 </a-entity>
+<!-- camera-view="rayCube: #touch-cube"
+cube-touch="rayFace: #touch-face" -->
+
+<a-box id="planeY" position="0 0 0" rotation="-90 0 0" width="10" height="10" depth="0.0001" color="#2950ee" material="opacity:0.3">
+  <a-text value="Y" position="0.5 -4 0" scale="2 2 2"></a-text>
+</a-box>
+
+<a-box id="planeX" position="0 0 0" rotation="0 90 0" width="10" height="10" depth="0.0001" color="#ff6600" material="opacity:0.3">
+    <a-text value="X" position="-4.5 4 0" scale="2 2 2"></a-text>
+</a-box>
+
+<a-box id="planeZ" position="0 0 0" rotation="0 0 0" width="10" height="10" depth="0.0001" color="#00b500" material="opacity:0.3">
+  <a-text value="Z" position="0.5 4 0" scale="2 2 2"></a-text>
+</a-box>
+<!-- <a-box id="planeY" position="0 0 0" rotation="0 0 0" width="10" height="0.0001" depth="10" color="#A4C87B" material="opacity:0.5"></a-box>
+<a-box id="planeX" position="0 0 0" rotation="0 0 0" width="0.0001" height="10" depth="10" color="#C87BA4" material="opacity:0.5"></a-box>
+<a-box id="planeZ" position="0 0 0" rotation="0 0 0" width="10" height="10" depth="0.0001" color="#7BA4C8" material="opacity:0.5"></a-box> -->
+
+<a-box id="boxY" position="0 0 0" width="0.05" height="10" depth="0.05" color="#2950ee" shadow></a-box>
+<a-box id="boxX" position="0 0 0" width="10" height="0.05" depth="0.05" color="#ff6600" shadow></a-box>
+<a-box id="boxZ" position="0 0 0" width="0.05" height="0.05" depth="10" color="#00b500" shadow></a-box>
 
     </a-scene>
 
