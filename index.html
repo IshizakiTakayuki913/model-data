@@ -22,23 +22,23 @@
     
 		setTimeout(() => {
 			// color_set(scrambled_state)
-      // let han = document.getElementById('L-hand')
-      // han.setAttribute('material', 'color', COLORS[lastIndex])
-      // han.object3D.traverse((node) => {
-      //   if (node.isMesh) {
-      //     node.material.transparent = true
-      //     node.material.opacity = 0.7
-      //     node.material.needsUpdate = true
-      //   }
-      // })
-      // han = document.getElementById('R-hand')
-      // han.object3D.traverse((node) => {
-      //   if (node.isMesh) {
-      //     node.material.transparent = true
-      //     node.material.opacity = 0.7
-      //     node.material.needsUpdate = true
-      //   }
-      // })
+      let han = document.getElementById('L-hand')
+      han.setAttribute('material', 'color', COLORS[lastIndex])
+      han.object3D.traverse((node) => {
+        if (node.isMesh) {
+          node.material.transparent = true
+          node.material.opacity = 0.7
+          node.material.needsUpdate = true
+        }
+      })
+      han = document.getElementById('R-hand')
+      han.object3D.traverse((node) => {
+        if (node.isMesh) {
+          node.material.transparent = true
+          node.material.opacity = 0.7
+          node.material.needsUpdate = true
+        }
+      })
       // console.log(moves["x'"])
       AAA()
 		}, 2000)
