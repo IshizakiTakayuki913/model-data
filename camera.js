@@ -1,4 +1,3 @@
-
 const camera = () => ({
 	schema: {
 		view_pres_rad: {type: 'vec3', default: {x:0, y:0, z:0}},
@@ -225,8 +224,12 @@ const camera = () => ({
 			// console.log(Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]))
 
 			// this.startRad[2] = 
-			this.plane[i].children[0].setAttribute("value", (Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]) - this.startRad[i]) / (Math.PI/180))
-			
+			this.plane[i].children[0].setAttribute(
+				"value", 
+				Math.round(
+					(Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]) - this.startRad[i]) / (Math.PI/180)
+				)
+			)			
 		}
 	},
 	
