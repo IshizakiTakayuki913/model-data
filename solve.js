@@ -810,3 +810,35 @@ function one_motion(sulb){
 	// console.log(`sulb:${sulb} time:${time}`)
 	return time
 }
+
+function raycast_rotate(roate,rad){
+	// console.log("one_rotate")
+	// scrambled_state.data_print()
+
+	const index = faces.indexOf(roate[0])
+	const vec = 'yxxzyzxyz'
+	corner = document.getElementById("corner").children
+	edge = document.getElementById("edge").children
+	center = document.getElementById("center").children
+	// console.log(`roate [${roate}] rad [${rad}] index [${index}] vec[index] [${vec[index]}] rote {${corner[moves_face_c[index][0]].object3D.rotation[vec[index]]}}`)
+
+
+	// console.log(moves_face_c[index])
+
+	for(let i of moves_face_c[index]){
+		corner[i].object3D.rotation[vec[index]] = rad
+		// corner[i].setAttribute(`rotation.y`, rad * 57.29)
+		// corner[i].setAttribute('rotation', {x:0,y:rad * 57.29,z:0})
+	}
+
+	for(let i of moves_face_e[index]){
+		edge[i].object3D.rotation[vec[index]] = rad
+		// edge[i].setAttribute(`rotation.y`, rad)
+	}
+
+	for(let i of moves_face_cn[index]){
+		center[i].object3D.rotation[vec[index]] = rad
+		// center[i].Object3D.rotation[vec[index]] = rad
+		// center[i].setAttribute(`rotation.y`, rad)
+	}
+}
