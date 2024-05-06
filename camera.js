@@ -26,6 +26,8 @@ const camera = () => ({
 
 		this.mouse_or_touch = false
 
+		this.NextMove = undefined
+
 		this.plane = [
 			document.getElementById('planeY'),
 			document.getElementById('planeX'),
@@ -152,6 +154,7 @@ const camera = () => ({
 			if(!(parts_type === "edge" || parts_type === "center" || parts_type === "corner"))	return
 
 			this.root_mode = true
+			this.NextMove = undefined
 			// this.parts = this.parts.id
 
 			this.rayCube = this.data.rayCube.components.raycaster
@@ -180,9 +183,9 @@ const camera = () => ({
 					// this.startRad[i] = Math.atan2(pos.point[this.atan[i][0]], pos.point[this.atan[i][1]])
 					this.plane[i].object3D.position[this.atan[(i+2)%3][0]] = pos.point[this.atan[(i+2)%3][0]]
 					this.plane[i].classList.add("ground")
-					this.plane[i].object3D.visible = true
+					// this.plane[i].object3D.visible = true
 					this.plane[i].children[0].setAttribute("color", "#FFF")
-					document.getElementById(this.ziku[i]).object3D.visible = true
+					// document.getElementById(this.ziku[i]).object3D.visible = true
 				}
 				else {
 					this.plane[i].object3D.visible = false
@@ -197,12 +200,26 @@ const camera = () => ({
 			this.parts = undefined
 			this.root_mode = false
 
+			if(this.NextMove[0] > "Z"){
+				// console.log(`小文字 [${roat_list[i]}]`)
+				scrambled_state = scrambled_state.hand_move(moves[this.NextMove])
+				// console.log(color_data)
+				color_data = color_re_set(this.NextMove)
+				// console.log(`後`)
+				// console.log(color_data)
+			}
+			else{
+				scrambled_state = scamble2state(scrambled_state,this.NextMove)
+				// color_set(scrambled_state)
+			}
+			one_rotate(scrambled_state, this.NextMove)
+			
 			for(let i of this.candidateMove){
 				this.plane[i].classList.remove("ground")
 				// this.plane[i].object3D.visible = false
 				// document.getElementById(this.ziku[i]).object3D.visible = false
 			}
-			
+			this.NextMove = undefined
 			this.candidateMove = []
 		})
 
@@ -310,7 +327,7 @@ const camera = () => ({
 		let rads = []
 		let dists = []
 		// let radIndex = 0
-		let distIndex = 0
+		let distIndex = -1
 		for(let i=0; i<this.candidateMove.length; i++){
 			const m = this.candidateMove[i]
 			if (!this.rayFace || !this.targetFace[m]) continue;
@@ -333,58 +350,23 @@ const camera = () => ({
 			this.plane[m].children[0].setAttribute("value", `dist:${(Math.round(dist*100)/100)} rad:${Math.round(rad)}`)
 			dists = dists.concat(dist)
 			rads = rads.concat(rad)
-			if(dists[distIndex] > dist)	distIndex = i
-
-			// let rad = Math.round((Math.atan2(item.point[this.atan[m][0]], item.point[this.atan[m][1]]) - this.startRad[m]) / (Math.PI/180))
-			// rad = ((rad+540)%360-180)
-			// this.plane[m].children[0].setAttribute("color", "#FFF")
-			// this.plane[m].children[0].setAttribute("value", rad)
-			// rads = rads.concat(rad)
-			// if(Math.abs(rads[radIndex]) < Math.abs(rad))	radIndex = i
-			// console.log(`index ${rads[radIndex]} rad ${rad} : abs.index ${Math.abs(rads[radIndex])} abs.rad ${Math.abs(rad)}`)
+			// console.log(`m [${m}] dist [${dist}] rad [${rad}]`)
+			if(Math.abs(dist) < 0.3 || Math.abs(rad) < 15){}
+			else if(dists[distIndex] == undefined ||dists[distIndex] > dist)	distIndex = i
 		}
-		// if(Math.abs(rads[(radIndex+1)%2]) > 40)	radIndex = (radIndex+1)%2
-		// // console.log(rads[radIndex])
-		// this.plane[this.candidateMove[radIndex]].children[0].setAttribute("color", "#F00")
-		this.plane[this.candidateMove[distIndex]].children[0].setAttribute("color", "#F00")
-		let MoveCode = this.pmove[distIndex]
-		MoveCode += (this.faces_rad[this.pmove[distIndex]] * rads[distIndex] > 0) ? "":"'"
-		this.insMove.setAttribute("value",`moves [${MoveCode}]`)
+
+		if(distIndex !=-1){
+			if(this.NextMove !== undefined && this.NextMove[0] !== this.pmove[distIndex])	
+				raycast_rotate(this.NextMove,0)
+
+			this.plane[this.candidateMove[distIndex]].children[0].setAttribute("color", "#F00")
+			let MoveCode = this.pmove[distIndex]
+			MoveCode += (this.faces_rad[this.pmove[distIndex]] * rads[distIndex] > 0) ? "":"'"
+			this.NextMove = MoveCode
+			this.insMove.setAttribute("value",`moves [${MoveCode}]`)
+			// console.log(`pmove [${this.pmove[distIndex]}] rad [${Math.min(dists[distIndex]/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1)}]`)
+			raycast_rotate(this.pmove[distIndex],Math.min((dists[distIndex]-0.3)/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1))
+		}
 	},
 	
 })
-
-
-		// this.el.addEventListener("mouseup", (e) => {
-		// 	if(!this.mouse_or_touch) return
-		// 	if(!this.root_mode)	return
-		// 	const regex = /[^a-z]/g;
-		// 	const parts_type = e.target.parentElement.id.replace(regex, "")
-		// 	if(parts_type !== "edge")	return
-		// 	const regex2 = /[^0-9]/g;
-		// 	const af = parseInt(e.target.parentElement.id.replace(regex2, ""))
-		// 	console.log(`mouseup [${this.parts}] for[${e.target.parentElement.id}] move [${touchMove[this.parts][af]}]`)
-
-		// 	if(parts_type === "edge" && touchMove[this.parts][af] != undefined){
-		// 		one_motion(touchMove[this.parts][af])
-		// 	}
-		// 	this.parts = undefined
-		// 	this.root_mode = false
-		// 	plane.classList.remove("ground")
-		// 	console.log(`remove("clickable")`)
-		// })
-
-    // this.el.classList.add('clickable')
-
-		// scene.addEventListener("click", (e) => {
-    //   console.log(e.target.tagName)
-		// })
-		// this.el.addEventListener("mousedown", (e) => {
-    //   console.log(`cubetouch mouseup\ntarget:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
-
-		// })
-		// const canvas = document.getElementById('sky')
-
-		// console.log(canvas[0])
-
-		// btn_mode = 0
