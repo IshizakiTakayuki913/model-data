@@ -1,3 +1,4 @@
+
 const camera = () => ({
 	schema: {
 		view_pres_rad: {type: 'vec3', default: {x:0, y:0, z:0}},
@@ -49,6 +50,74 @@ const camera = () => ({
 		this.targetFace = []
 		this.startRad = []
 
+		this.cubeTileMove = [
+			["y","x"],
+			["y","z"],
+			["y","x"],
+			["y","z"],
+			["x","z"],
+			["x","z"],
+			
+			["L"],["B"],
+			["R"],["B"],
+			["R"],["F"],
+			["L"],["F"],
+
+			["B"],["U"],
+			["R"],["U"],
+			["F"],["U"],
+			["L"],["U"],
+
+			["B"],["D"],
+			["R"],["D"],
+			["F"],["D"],
+			["L"],["D"],
+
+			["L","B"],
+			["U","B"],
+			["U","L"],
+
+			["R","B"],
+			["U","R"],
+			["U","B"],
+
+			["R","F"],
+			["U","F"],
+			["U","R"],
+
+			["L","F"],
+			["U","L"],
+			["U","F"],
+			
+
+			["L","B"],
+			["D","L"],
+			["D","B"],
+
+			["R","B"],
+			["D","B"],
+			["D","R"],
+
+			["R","F"],
+			["D","R"],
+			["D","F"],
+
+			["L","F"],
+			["D","F"],
+			["D","L"],
+		]
+
+		this.vec = {
+			"U":0, "D":0, "L":1, "R":1, "B":2, "F":2, "y":0, "x":1, "z":2, 
+		}
+
+		this.faces_rad = {
+			"U":-1, "D":1, "L":1, "R":-1, "B":1, "F":-1, "y":-1, "x":-1, "z":-1, 
+		}
+		// [-1, -1,1,  -1,   1,1,  -1,-1,-1]
+
+		this.candidateMove = []
+		this.insMove = document.getElementById('insMove')
 
 		this.el.addEventListener('raycaster-intersection', (e) => {
 			if (e.target !== this.data.rayFace) return; // 対応するレイキャスターのみ反応
@@ -73,34 +142,53 @@ const camera = () => ({
 
 		root.addEventListener("mousedown", (e) => {
 			if(this.root_mode)	return
-			this.parts = e.target.parentElement.id
+			this.parts = e.target
 			// console.log(`mousedown ID [${e.target.parentElement.id}]`)
 
 			const regex = /[^a-z]/g;
 			const regex2 = /[^0-9]/g;
-			const parts_type = this.parts.replace(regex, "")
-			const be = this.parts.replace(regex2, "")
+			const parts_type = this.parts.parentElement.id.replace(regex, "")
+			const be = this.parts.parentElement.id.replace(regex2, "")
 			if(!(parts_type === "edge" || parts_type === "center" || parts_type === "corner"))	return
 
 			this.root_mode = true
-			this.parts = be
+			// this.parts = this.parts.id
 
 			this.rayCube = this.data.rayCube.components.raycaster
 			this.targetCube = e.target
 
 			const pos = this.rayCube.getIntersection(this.targetCube)
 
-			this.startRad[0] = Math.atan2(pos.point.x, pos.point.z)
-			this.plane[0].object3D.position.y = pos.point.y
-			this.plane[0].classList.add("ground")
-			
-			this.startRad[1] = Math.atan2(pos.point.z, pos.point.y)
-			this.plane[1].object3D.position.x = pos.point.x
-			this.plane[1].classList.add("ground")
-			
-			this.startRad[2] = Math.atan2(pos.point.y, pos.point.x)
-			this.plane[2].object3D.position.z = pos.point.z
-			this.plane[2].classList.add("ground")
+			// console.log(`pushed id = [${this.parts.id}] parseInt [${parseInt(this.parts.id)}]`)
+			this.pmove = this.cubeTileMove[parseInt(this.parts.id)]
+			this.candidateMove = []
+
+			for(let i=0;i<this.pmove.length;i++){
+				this.candidateMove[i] = this.vec[this.pmove[i]]
+			}
+
+			// console.log(`candidateMove`)
+			// console.log(this.candidateMove)
+
+			this.startRad = []
+
+			this.insMove.setAttribute("value",``)
+			for(let i=0; i<3; i++){
+				if(this.candidateMove.indexOf(i) !== -1){
+					// console.log(`for i [${i}]`)
+					this.startRad[i] = [pos.point[this.atan[i][0]], pos.point[this.atan[i][1]]]
+					// this.startRad[i] = Math.atan2(pos.point[this.atan[i][0]], pos.point[this.atan[i][1]])
+					this.plane[i].object3D.position[this.atan[(i+2)%3][0]] = pos.point[this.atan[(i+2)%3][0]]
+					this.plane[i].classList.add("ground")
+					this.plane[i].object3D.visible = true
+					this.plane[i].children[0].setAttribute("color", "#FFF")
+					document.getElementById(this.ziku[i]).object3D.visible = true
+				}
+				else {
+					this.plane[i].object3D.visible = false
+					document.getElementById(this.ziku[i]).object3D.visible = false
+				}
+			}
 		})
 
 		this.el.addEventListener("raycaster-mouseup", (e) => {
@@ -108,9 +196,14 @@ const camera = () => ({
 
 			this.parts = undefined
 			this.root_mode = false
-			for(let i=0;i<3;i++)
+
+			for(let i of this.candidateMove){
 				this.plane[i].classList.remove("ground")
-			// console.log(`remove("clickable")`)
+				// this.plane[i].object3D.visible = false
+				// document.getElementById(this.ziku[i]).object3D.visible = false
+			}
+			
+			this.candidateMove = []
 		})
 
 		btn1.addEventListener('click', () => {
@@ -213,24 +306,85 @@ const camera = () => ({
 		});
 	},
 	tick(){
-		// console.log(this.targetFace)
-		for(let i=0;i<3;i++){
-			if (!this.rayFace || !this.targetFace[i]) continue;
-			const item = this.rayFace.getIntersection(this.targetFace[i])
-			// console.log(`  ${this.rayFace.id}`)
-			// if(item === undefined || item == null)	continue
-			const box = document.getElementById(this.ziku[i])
-			box.object3D.position.copy({x:item.point.x * this.indexM[i].x, y:item.point.y * this.indexM[i].y, z:item.point.z * this.indexM[i].z})
-			// console.log(Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]))
+		if(this.candidateMove.length === 0) return
+		let rads = []
+		let dists = []
+		// let radIndex = 0
+		let distIndex = 0
+		for(let i=0; i<this.candidateMove.length; i++){
+			const m = this.candidateMove[i]
+			if (!this.rayFace || !this.targetFace[m]) continue;
+			const item = this.rayFace.getIntersection(this.targetFace[m])
+			const box = document.getElementById(this.ziku[m])
+			box.object3D.position.copy({x:item.point.x * this.indexM[m].x, y:item.point.y * this.indexM[m].y, z:item.point.z * this.indexM[m].z})
 
-			// this.startRad[2] = 
-			this.plane[i].children[0].setAttribute(
-				"value", 
-				Math.round(
-					(Math.atan2(item.point[this.atan[i][0]], item.point[this.atan[i][1]]) - this.startRad[i]) / (Math.PI/180)
-				)
-			)			
+			let dist = Math.sqrt(
+				Math.pow(item.point[this.atan[m][0]] - this.startRad[m][0],2) +
+				Math.pow(item.point[this.atan[m][1]] - this.startRad[m][1],2)
+			)
+			// let rad = Math.round(Math.atan2(item.point[this.atan[m][0]], item.point[this.atan[m][1]]) / (Math.PI/180))
+			let rad = Math.round(
+				(Math.atan2(item.point[this.atan[m][0]], item.point[this.atan[m][1]]) - 
+				Math.atan2(this.startRad[m][0], this.startRad[m][1])			) / (Math.PI/180)
+			)
+			// let dist = Math.sqrt(Math.pow(item.point[this.atan[m][0]],2) + Math.pow(item.point[this.atan[m][1]],2))
+
+			this.plane[m].children[0].setAttribute("color", "#FFF")
+			this.plane[m].children[0].setAttribute("value", `dist:${(Math.round(dist*100)/100)} rad:${Math.round(rad)}`)
+			dists = dists.concat(dist)
+			rads = rads.concat(rad)
+			if(dists[distIndex] > dist)	distIndex = i
+
+			// let rad = Math.round((Math.atan2(item.point[this.atan[m][0]], item.point[this.atan[m][1]]) - this.startRad[m]) / (Math.PI/180))
+			// rad = ((rad+540)%360-180)
+			// this.plane[m].children[0].setAttribute("color", "#FFF")
+			// this.plane[m].children[0].setAttribute("value", rad)
+			// rads = rads.concat(rad)
+			// if(Math.abs(rads[radIndex]) < Math.abs(rad))	radIndex = i
+			// console.log(`index ${rads[radIndex]} rad ${rad} : abs.index ${Math.abs(rads[radIndex])} abs.rad ${Math.abs(rad)}`)
 		}
+		// if(Math.abs(rads[(radIndex+1)%2]) > 40)	radIndex = (radIndex+1)%2
+		// // console.log(rads[radIndex])
+		// this.plane[this.candidateMove[radIndex]].children[0].setAttribute("color", "#F00")
+		this.plane[this.candidateMove[distIndex]].children[0].setAttribute("color", "#F00")
+		let MoveCode = this.pmove[distIndex]
+		MoveCode += (this.faces_rad[this.pmove[distIndex]] * rads[distIndex] > 0) ? "":"'"
+		this.insMove.setAttribute("value",`moves [${MoveCode}]`)
 	},
 	
 })
+
+
+		// this.el.addEventListener("mouseup", (e) => {
+		// 	if(!this.mouse_or_touch) return
+		// 	if(!this.root_mode)	return
+		// 	const regex = /[^a-z]/g;
+		// 	const parts_type = e.target.parentElement.id.replace(regex, "")
+		// 	if(parts_type !== "edge")	return
+		// 	const regex2 = /[^0-9]/g;
+		// 	const af = parseInt(e.target.parentElement.id.replace(regex2, ""))
+		// 	console.log(`mouseup [${this.parts}] for[${e.target.parentElement.id}] move [${touchMove[this.parts][af]}]`)
+
+		// 	if(parts_type === "edge" && touchMove[this.parts][af] != undefined){
+		// 		one_motion(touchMove[this.parts][af])
+		// 	}
+		// 	this.parts = undefined
+		// 	this.root_mode = false
+		// 	plane.classList.remove("ground")
+		// 	console.log(`remove("clickable")`)
+		// })
+
+    // this.el.classList.add('clickable')
+
+		// scene.addEventListener("click", (e) => {
+    //   console.log(e.target.tagName)
+		// })
+		// this.el.addEventListener("mousedown", (e) => {
+    //   console.log(`cubetouch mouseup\ntarget:${e.target.tagName} currentTarget:${e.currentTarget.tagName}`)
+
+		// })
+		// const canvas = document.getElementById('sky')
+
+		// console.log(canvas[0])
+
+		// btn_mode = 0
