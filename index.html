@@ -38,8 +38,10 @@
 
           console.log(doc)
           const b= doc.getElementsByClassName('a-dialog-ok-button')
-          console.log(b)
           if(b.length > 0) b[0].click()
+
+          // c = doc.getElementsByClassName('a-enter-vr-button')
+          console.log(doc.getElementsByClassName('a-enter-vr-button'))
 
           this.user = doc.getElementById(userId);
           // },3000)
@@ -55,19 +57,14 @@
       }
     });
 
-    function bodyLoad(){
-
-      const b = document.getElementsByClassName('a-dialog-ok-button')
-      console.log(b)
-      const bb = b[0]
-      console.log(bb)
-      // b.onclick()
-      
-    }
   </script>
 
   <body id="body">
-    <a-scene id="scene" press-key-board>
+    <a-scene id="scene"
+      press-key-board
+      xr-mode-ui="enabled: false"
+      keyboard-shortcuts="enterVR: false; exitVR: false"
+    >
 
 <a-assets>
   <a-asset-item id="model_hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
@@ -309,30 +306,16 @@
     <div id="btn1" class="btn"></div>
     <iframe id="iframe" src="./index2.html" width="150" height="150"
     ></iframe>
-    
   </body >
-<!--   
-  <script type="text/javascript">
-    window.addEventListener("load",() => {
-      console.log("model_hand load")
-      let han = document.getElementById('L-hand')
-      han.object3D.traverse((node) => {
-        if (node.isMesh) {
-          node.material.transparent = true
-          node.material.opacity = 0.7
-          node.material.needsUpdate = true
-        }
-      })
-      han = document.getElementById('R-hand')
-      han.object3D.traverse((node) => {
-        if (node.isMesh) {
-          node.material.transparent = true
-          node.material.opacity = 0.7
-          node.material.needsUpdate = true
-        }
-      })
-    })
-  </script> -->
 </html>
 
 
+
+<!-- <script>
+  function bodyLoad(){
+
+    console.log(document.getElementsByClassName('a-enter-vr-button')[0])
+    // b.onclick()
+    
+  }
+</script> -->
