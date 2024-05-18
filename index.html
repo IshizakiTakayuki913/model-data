@@ -13,46 +13,63 @@
     <script src="./camera.js"></script>
     <!-- <script src="./cubeTouch.js"></script> -->
     <link rel="stylesheet" href="./style.css">
+    <link rel="shortcut icon" href="">
   </head>
 
   <script type="text/javascript">
+    let dialogButton = undefined
     AFRAME.registerComponent('press-key-board', presskeyboard())
     AFRAME.registerComponent('camera-view', camera())
-    // AFRAME.registerComponent('cube-touch', cubetouch())
-    
-		setTimeout(() => {
-			// color_set(scrambled_state)
-      // let han = document.getElementById('L-hand')
-      // han.setAttribute('material', 'color', COLORS[lastIndex])
-      // han.object3D.traverse((node) => {
-      //   if (node.isMesh) {
-      //     node.material.transparent = true
-      //     node.material.opacity = 0.7
-      //     node.material.needsUpdate = true
-      //   }
-      // })
-      // han = document.getElementById('R-hand')
-      // han.object3D.traverse((node) => {
-      //   if (node.isMesh) {
-      //     node.material.transparent = true
-      //     node.material.opacity = 0.7
-      //     node.material.needsUpdate = true
-      //   }
-      // })
-      // console.log(moves["x'"])
-      AAA()
-		}, 2000)
+    AFRAME.registerComponent('sync-user', {
+      schema: {
+        userId: {default: "userPosition"},
+      },
 
-		// setTimeout(() => {
-    //   BBB()
-		// }, 4000)
+      init() {
+        this.user = undefined;
+        this.camera = this.el;
+        var userId = this.data.userId;
+        const iframe = document.getElementById("iframe")
+        console.log(iframe)
+
+        window.addEventListener("load",() => {
+          // setTimeout(() => {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+          console.log(doc)
+          b= doc.getElementsByClassName('a-dialog-ok-button')
+          b[0].click()
+
+          this.user = doc.getElementById(userId);
+          // },3000)
+        })
+      },
+      tick() {
+        if ((typeof this.user !== "undefined") && (this.user != null)) {
+          // var pos = this.camera.object3D.position
+          var rot = this.camera.object3D.rotation
+          // this.user.object3D.position.copy(pos)
+          this.user.object3D.rotation.copy(rot)
+        }
+      }
+    });
+
+    function bodyLoad(){
+
+      const b = document.getElementsByClassName('a-dialog-ok-button')
+      console.log(b)
+      const bb = b[0]
+      console.log(bb)
+      // b.onclick()
+      
+    }
   </script>
 
   <body id="body">
     <a-scene id="scene" press-key-board>
 
 <a-assets>
-  <a-asset-item id="model_hand" src="./sub-hand.glb"></a-asset-item>
+  <a-asset-item id="model_hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
 </a-assets>
 
 <a-sky id="sky" color="#000"></a-sky>
@@ -246,7 +263,7 @@
     </a-entity>
   </a-entity>
 
-  <a-entity id="camera"position="0 0 0" rotation="-30 30 0">
+  <a-entity id="camera" sync-user="userId: userPosition" position="0 0 0" rotation="-30 30 0">
     <a-camera 
       id="camera2"
       camera-view="rayCube: #touch-cube; rayFace: #touch-face"
@@ -289,7 +306,32 @@
     </a-scene>
 
     <div id="btn1" class="btn"></div>
-  </body>
+    <iframe id="iframe" src="./index2.html" width="150" height="150"
+    ></iframe>
+    
+  </body >
+<!--   
+  <script type="text/javascript">
+    window.addEventListener("load",() => {
+      console.log("model_hand load")
+      let han = document.getElementById('L-hand')
+      han.object3D.traverse((node) => {
+        if (node.isMesh) {
+          node.material.transparent = true
+          node.material.opacity = 0.7
+          node.material.needsUpdate = true
+        }
+      })
+      han = document.getElementById('R-hand')
+      han.object3D.traverse((node) => {
+        if (node.isMesh) {
+          node.material.transparent = true
+          node.material.opacity = 0.7
+          node.material.needsUpdate = true
+        }
+      })
+    })
+  </script> -->
 </html>
 
 
