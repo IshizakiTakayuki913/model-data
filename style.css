@@ -1,7 +1,12 @@
 body {
-    background: #9af;
+    background: #000000;
     position: relative;
     /* z-index: 50; */
+}
+
+#scene2 {
+    height: 300px;
+    width: 600px;
 }
 
 #screen {
@@ -25,4 +30,14 @@ body {
 #btn1 {
     left: 100px;
     top: 100px;
+}
+
+#iframe {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    border: none;
+    background: #00000000;
+    pointer-events: none;
 }
