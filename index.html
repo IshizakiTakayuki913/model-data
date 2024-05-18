@@ -37,7 +37,8 @@
           const doc = iframe.contentDocument || iframe.contentWindow.document;
 
           console.log(doc)
-          b= doc.getElementsByClassName('a-dialog-ok-button')
+          const b= doc.getElementsByClassName('a-dialog-ok-button')
+          console.log(b)
           if(b !== undefined) b[0].click()
 
           this.user = doc.getElementById(userId);
