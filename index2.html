@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>i-frame</title>
+    
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.8thwall.com/web/aframe/aframe-extras-6.1.1.min.js"></script>
+  </head>
+
+
+  <body id="body">
+    <a-scene id="scene2">
+
+      <!-- <a-sky id="sky" color="#000"></a-sky> -->
+      <a-entity id="ziku" position="0 0 0" rotation="0 0 0">
+        <!-- <a-torus color="#F00" position="0 0 0" rotation="0 0 0" arc="360" radius="2" radius-tubular="0.02"></a-torus>
+        <a-torus color="#0F0" position="0 0 0" rotation="0 90 0" arc="360" radius="2" radius-tubular="0.02"></a-torus>
+        <a-torus color="#00F" position="0 0 0" rotation="90 0 0" arc="360" radius="2" radius-tubular="0.02"></a-torus> -->
+
+          <!-- line__1="color: #F00; start: 0 0 0; end: 0 1 0"
+          line__2="color: #0F0; start: 0 0 0; end: 1 0 0"
+          line__3="color: #00F; start: 0 0 0; end: 0 0 1" -->
+
+          <a-box position="0 0.3 0" width="0.02" height="0.6" depth="0.02" color="#F00" ></a-box>
+          <a-box position="0.3 0 0" width="0.6" height="0.02" depth="0.02" color="#0F0"></a-box>
+          <a-box position="0 0 0.3" width="0.02" height="0.02" depth="0.6" color="#00F"></a-box>
+
+      </a-entity>
+
+      <a-entity id="userPosition" position="0 0 0">
+        <a-camera 
+          position="0 0 0.7"
+          look-controls="enabled: false"
+          wasd-controls-enabled="false">
+        </a-camera>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
