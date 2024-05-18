@@ -26,7 +26,7 @@ const camera = () => ({
 
 		this.mouse_or_touch = false
 
-		this.NextMove = undefined
+		this.NextMove = []
 
 		this.plane = [
 			document.getElementById('planeY'),
@@ -154,7 +154,7 @@ const camera = () => ({
 			if(!(parts_type === "edge" || parts_type === "center" || parts_type === "corner"))	return
 
 			this.root_mode = true
-			this.NextMove = undefined
+			this.NextMove = []
 			// this.parts = this.parts.id
 
 			this.rayCube = this.data.rayCube.components.raycaster
@@ -199,21 +199,23 @@ const camera = () => ({
 
 			this.parts = undefined
 			this.root_mode = false
+			
+			let move1 = this.pmove[this.NextMove[0]] + ((this.faces_rad[this.pmove[this.NextMove[0]]] * this.NextMove[1] > 0) ? "":"'")
 
-			if(this.NextMove !== undefined){
-				if(this.NextMove[0] > "Z"){
+			if(this.NextMove.length > 0){
+				if(move1[0] > "Z"){
 					// console.log(`小文字 [${roat_list[i]}]`)
-					scrambled_state = scrambled_state.hand_move(moves[this.NextMove])
+					scrambled_state = scrambled_state.hand_move(moves[move1])
 					// console.log(color_data)
-					color_data = color_re_set(this.NextMove)
+					color_data = color_re_set(move1)
 					// console.log(`後`)
 					// console.log(color_data)
 				}
 				else{
-					scrambled_state = scamble2state(scrambled_state,this.NextMove)
+					scrambled_state = scamble2state(scrambled_state,move1)
 					// color_set(scrambled_state)
 				}
-				one_rotate(scrambled_state, this.NextMove)
+				one_rotate(scrambled_state, move1)
 				
 			}
 			for(let i of this.candidateMove){
@@ -221,11 +223,12 @@ const camera = () => ({
 				// this.plane[i].object3D.visible = false
 				// document.getElementById(this.ziku[i]).object3D.visible = false
 			}
-			this.NextMove = undefined
+			this.NextMove = []
 			this.candidateMove = []
 		})
 
 		btn1.addEventListener('click', () => {
+			document.getElementById('iframe').onload()
 			if(btn_mode < 0)	return
 			else if(btn_mode === 1)	sul_mode = false
 			else if(btn_mode === 0)	{
@@ -353,21 +356,40 @@ const camera = () => ({
 			dists = dists.concat(dist)
 			rads = rads.concat(rad)
 			// console.log(`m [${m}] dist [${dist}] rad [${rad}]`)
-			if(Math.abs(dist) < 0.3 || Math.abs(rad) < 15){}
+			
+
+			if(Math.abs(dist) < 0.5 || Math.abs(rad) < 15){
+			}
 			else if(dists[distIndex] == undefined ||dists[distIndex] > dist)	distIndex = i
 		}
 
-		if(distIndex !=-1){
-			if(this.NextMove !== undefined && this.NextMove[0] !== this.pmove[distIndex])	
-				raycast_rotate(this.NextMove,0)
+
+		if(distIndex !=-1){			
+			const MoveCode = this.pmove[distIndex] + ((this.faces_rad[this.pmove[distIndex]] * rads[distIndex] > 0) ? "":"'")
+			// if(distIndex != undefined && this.NextMove[0] != distIndex)
+			// 	raycast_rotate()
+
+			if(this.NextMove.length > 0 && distIndex != this.NextMove[0])	
+				raycast_rotate(this.pmove[this.NextMove[0]],0)
 
 			this.plane[this.candidateMove[distIndex]].children[0].setAttribute("color", "#F00")
-			let MoveCode = this.pmove[distIndex]
-			MoveCode += (this.faces_rad[this.pmove[distIndex]] * rads[distIndex] > 0) ? "":"'"
-			this.NextMove = MoveCode
+			this.NextMove = [distIndex, rads[distIndex]]
 			this.insMove.setAttribute("value",`moves [${MoveCode}]`)
 			// console.log(`pmove [${this.pmove[distIndex]}] rad [${Math.min(dists[distIndex]/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1)}]`)
-			raycast_rotate(this.pmove[distIndex],Math.min((dists[distIndex]-0.3)/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1))
+			raycast_rotate(this.pmove[distIndex],Math.min((dists[distIndex]-0.5)/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1))
+		}
+		else if(this.NextMove.length > 0){
+			const MoveCode = this.pmove[this.NextMove[0]] + ((this.faces_rad[this.pmove[this.NextMove[0]]] * rads[this.NextMove[1]] > 0) ? "":"'")
+
+			if(Math.abs(dists[this.NextMove[0]]) <= 0.5 || Math.abs(rads[this.NextMove[0]]) <= 15){
+				console.log(`return dist 0`)
+				raycast_rotate(MoveCode, 0)
+				this.NextMove = []
+			}
+			else{
+				console.log(`return dist 0 nay`)
+				raycast_rotate(MoveCode, Math.min((dists[this.NextMove[0]]-0.5)/2,Math.PI/2) * (rads[this.NextMove[0]] > 0 ?1:-1))
+			}
 		}
 	},
 	
