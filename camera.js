@@ -200,20 +200,22 @@ const camera = () => ({
 			this.parts = undefined
 			this.root_mode = false
 
-			if(this.NextMove[0] > "Z"){
-				// console.log(`小文字 [${roat_list[i]}]`)
-				scrambled_state = scrambled_state.hand_move(moves[this.NextMove])
-				// console.log(color_data)
-				color_data = color_re_set(this.NextMove)
-				// console.log(`後`)
-				// console.log(color_data)
+			if(this.NextMove !== undefined){
+				if(this.NextMove[0] > "Z"){
+					// console.log(`小文字 [${roat_list[i]}]`)
+					scrambled_state = scrambled_state.hand_move(moves[this.NextMove])
+					// console.log(color_data)
+					color_data = color_re_set(this.NextMove)
+					// console.log(`後`)
+					// console.log(color_data)
+				}
+				else{
+					scrambled_state = scamble2state(scrambled_state,this.NextMove)
+					// color_set(scrambled_state)
+				}
+				one_rotate(scrambled_state, this.NextMove)
+				
 			}
-			else{
-				scrambled_state = scamble2state(scrambled_state,this.NextMove)
-				// color_set(scrambled_state)
-			}
-			one_rotate(scrambled_state, this.NextMove)
-			
 			for(let i of this.candidateMove){
 				this.plane[i].classList.remove("ground")
 				// this.plane[i].object3D.visible = false
