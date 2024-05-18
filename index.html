@@ -39,7 +39,7 @@
           console.log(doc)
           const b= doc.getElementsByClassName('a-dialog-ok-button')
           console.log(b)
-          if(b !== undefined) b[0].click()
+          if(b.length > 0) b[0].click()
 
           this.user = doc.getElementById(userId);
           // },3000)
