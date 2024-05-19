@@ -543,6 +543,7 @@ let scrambled_state = solved_state
 
 
 let search = new Search()
+let sum_solution = []
 let sum_solution2 = []
 let btn_mode = 0
 
@@ -573,36 +574,51 @@ function BBB(){
 	solved_state = scrambled_state
 	// solution = search.start_search(scrambled_state,0)
 	console.log(`clos  [${search.start_search(solved_state,0, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
+	sum_solution.push(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
 	console.log(`f2l 1 [${search.start_search(solved_state,1, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
+	sum_solution.push(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
 	console.log(`f2l 2 [${search.start_search(solved_state,2, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
+	sum_solution.push(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
 	console.log(`f2l 3 [${search.start_search(solved_state,3, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
+	sum_solution.push(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
 	console.log(`f2l 4 [${search.start_search(solved_state,4, 20)}]`)
-	sum_solution2 = sum_solution2.concat(search.current_solution)
+	sum_solution.push(search.current_solution)
 	solved_state = scamble2state(solved_state,search.current_solution.join(' '))
 	search.current_solution = []
 
-	console.log(sum_solution2)
+	console.log(sum_solution)
+	const sulveText = document.getElementById('sulves')
+	table = sulveText.getElementsByTagName('td')
+
+	// s = sum_solution.filter((sum_solution) => sum_solution.length > 0)
+	for(let i=0;i<sum_solution.length;i++){
+		if(sum_solution[i].length == 0)	continue
+		// sulveText.innerHTML += "<div><p>" + solu.join("</p></div><div><p>") + "</p></div><br>"
+		table[i].innerHTML = "<div><p>" + sum_solution[i].join("</p></div><div><p>") + "</p></div>"
+	}
+
+	sum_solution2 = sum_solution
+
+	
+	const solveDiv = sulveText.getElementsByTagName('div')
+	console.log(solveDiv)
 	btn_mode = 1
 }
 
 // console.log(`current_solution`)
-// console.log(sum_solution2)
+// console.log(sum_solution)
 // color_set(scrambled_state)
 // solved_state.data_print()
 // scrambled_state.data_print()
@@ -703,30 +719,52 @@ const Change = [
 
 let h_v = [0,0]
 let sul_mode = true
-
+let movementCount = -1
+let move180 = false
 // console.log(`f2l 1 ${(sum_solution += search.start_search(solved_state,1, 20))}`)
 
 function motions(){ //roates
 	// console.log(`this.data.sul [${sum_solution2.join(' ')}] sulb ${sum_solution2[0]}`)
+	// if(sum_solution2[0].length == 0){
+	// 	sum_solution2.shift()
+	// console.log(sum_solution2)
+	// }
+for(;sum_solution2.length > 0 && sum_solution2[0].length == 0;sum_solution2.shift());
+
 	if(sum_solution2.length == 0){
+		
+	console.log(sum_solution)
 		console.log(`sulb no`)
 		btn_mode = 0
+		movementCount = -1
+		move180 = false
 		return
 	}
+	
 	// console.log(roates)
 	// console.log(roates.length)
 	// const roat_list = roates
-	if(sum_solution2[0][1] == '2'){
+	if(move180){
+		movementCount -= 1
+		move180 = false
+	}
+
+	if(sum_solution2[0][0][1] == '2'){
 		// console.log(`?2 ${sum_solution2[0]}`)
-		const S2 = sum_solution2.shift()
-		sum_solution2.unshift(S2[0], S2[0])
+		const S2 = sum_solution2[0].shift()
+		sum_solution2[0].unshift(S2[0], S2[0])
+		// movementCount=1
+		move180 = true
 	}
 
 
 	let time_tank = 0
-	time_tank += one_motion(sum_solution2[0])
-	sum_solution2.shift()
-	// console.log(sum_solution2.length)
+	time_tank += one_motion(sum_solution2[0][0])
+	sum_solution2[0].shift()
+
+	movementCount+=1
+	const solveDiv = document.getElementById('sulves').getElementsByTagName('div')
+	solveDiv[movementCount].classList.add('now-move')
 	
 	setTimeout(() => {
 		// console.log(`time_tank:${time_tank}`)
