@@ -58,8 +58,8 @@
     });
 
   </script>
-
-  <body id="body">
+<!--  onpaste="return false" oncontextmenu="return false" -->
+  <body id="rootBody" oncontextmenu="return false;">
     <a-scene id="scene"
       press-key-board
       xr-mode-ui="enabled: false"
@@ -70,8 +70,8 @@
   <a-asset-item id="model_hand" src="https://ishizakitakayuki913.github.io/model-data/sub-hand.glb"></a-asset-item>
 </a-assets>
 
-<a-sky id="sky" color="#000"></a-sky>
-<a-plane position="0 -5 0" rotation="-90 0 0" color="#DDD" height="10" width="10"></a-plane>
+<!-- <a-sky id="sky" color="#000"></a-sky> -->
+<!-- <a-plane position="0 -5 0" rotation="-90 0 0" color="#DDD" height="10" width="10"></a-plane> -->
 
 <a-entity id="root" position="0 0 0" rotation="0 0 0">
 
@@ -304,18 +304,34 @@
     </a-scene>
 
     <div id="btn1" class="btn"></div>
-    <iframe id="iframe" src="./index2.html" width="150" height="150"
+    <div id="logs" class="text un-pointer-events"></div>
+
+    <div id="sulves" class="text">
+      <table>
+        <tr>
+          <th>Cross</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>F2L.1</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>F2L.2</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>F2L.3</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>F2L.4</th>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+
+    <iframe id="iframe" class="un-pointer-events" src="./index2.html" width="150" height="150"
     ></iframe>
   </body >
 </html>
-
-
-
-<!-- <script>
-  function bodyLoad(){
-
-    console.log(document.getElementsByClassName('a-enter-vr-button')[0])
-    // b.onclick()
-    
-  }
-</script> -->
