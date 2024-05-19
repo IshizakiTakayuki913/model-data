@@ -6,7 +6,7 @@ const presskeyboard = () => ({
 	},
 	
 	init() {
-		const body = document.getElementById("body")
+		const body = document.getElementById("rootBody")
 		const Lhand = document.getElementById("L-hand")
 		const Rhand = document.getElementById("R-hand")
 
