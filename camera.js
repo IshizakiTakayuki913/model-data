@@ -120,6 +120,7 @@ const camera = () => ({
 
 		this.candidateMove = []
 		this.insMove = document.getElementById('insMove')
+		this.log = document.getElementById('logs')
 
 		this.el.addEventListener('raycaster-intersection', (e) => {
 			if (e.target !== this.data.rayFace) return; // 対応するレイキャスターのみ反応
@@ -216,7 +217,7 @@ const camera = () => ({
 					// color_set(scrambled_state)
 				}
 				one_rotate(scrambled_state, move1)
-				
+				this.log.innerHTML = `moves [${move1}]<br>` + this.log.innerHTML
 			}
 			for(let i of this.candidateMove){
 				this.plane[i].classList.remove("ground")
@@ -228,7 +229,7 @@ const camera = () => ({
 		})
 
 		btn1.addEventListener('click', () => {
-			document.getElementById('iframe').onload()
+			// document.getElementById('iframe').onload()
 			if(btn_mode < 0)	return
 			else if(btn_mode === 1)	sul_mode = false
 			else if(btn_mode === 0)	{
@@ -333,6 +334,7 @@ const camera = () => ({
 		let dists = []
 		// let radIndex = 0
 		let distIndex = -1
+
 		for(let i=0; i<this.candidateMove.length; i++){
 			const m = this.candidateMove[i]
 			if (!this.rayFace || !this.targetFace[m]) continue;
@@ -374,7 +376,7 @@ const camera = () => ({
 
 			this.plane[this.candidateMove[distIndex]].children[0].setAttribute("color", "#F00")
 			this.NextMove = [distIndex, rads[distIndex]]
-			this.insMove.setAttribute("value",`moves [${MoveCode}]`)
+			// this.insMove.setAttribute("value",`moves [${MoveCode}]`)
 			// console.log(`pmove [${this.pmove[distIndex]}] rad [${Math.min(dists[distIndex]/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1)}]`)
 			raycast_rotate(this.pmove[distIndex],Math.min((dists[distIndex]-0.5)/2,Math.PI/2) * (rads[distIndex] > 0 ?1:-1))
 		}
